@@ -1,2 +1,1 @@
-# se_project
-Project for Software Engineering
+Python server.py
