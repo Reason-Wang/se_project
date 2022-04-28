@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\11487\Desktop\code\test\file.ui'
+# Form implementation generated from reading ui file 'c:\Users\11487\Desktop\code\se_project\orderManage_module\cart.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -17,22 +17,13 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.id = QtWidgets.QLineEdit(self.centralwidget)
-        self.id.setGeometry(QtCore.QRect(100, 50, 81, 31))
-        self.id.setObjectName("id")
-        self.name = QtWidgets.QLineEdit(self.centralwidget)
-        self.name.setGeometry(QtCore.QRect(240, 50, 131, 31))
-        self.name.setObjectName("name")
-        self.price = QtWidgets.QLineEdit(self.centralwidget)
-        self.price.setGeometry(QtCore.QRect(430, 50, 81, 31))
-        self.price.setObjectName("price")
-        self.btn_add = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_add.setGeometry(QtCore.QRect(610, 80, 93, 28))
-        self.btn_add.setObjectName("btn_add")
+        self.checkAll = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkAll.setGeometry(QtCore.QRect(560, 20, 61, 19))
+        self.checkAll.setObjectName("checkAll")
         self.table = QtWidgets.QTableWidget(self.centralwidget)
-        self.table.setGeometry(QtCore.QRect(90, 140, 511, 331))
+        self.table.setGeometry(QtCore.QRect(30, 10, 499, 529))
         self.table.setObjectName("table")
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(5)
         self.table.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.table.setHorizontalHeaderItem(0, item)
@@ -42,9 +33,8 @@ class Ui_MainWindow(object):
         self.table.setHorizontalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
         self.table.setHorizontalHeaderItem(3, item)
-        self.checkAll = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkAll.setGeometry(QtCore.QRect(630, 160, 61, 19))
-        self.checkAll.setObjectName("checkAll")
+        item = QtWidgets.QTableWidgetItem()
+        self.table.setHorizontalHeaderItem(4, item)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
@@ -60,10 +50,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.id.setText(_translate("MainWindow", "id"))
-        self.name.setText(_translate("MainWindow", "name"))
-        self.price.setText(_translate("MainWindow", "price"))
-        self.btn_add.setText(_translate("MainWindow", "添加"))
+        self.checkAll.setText(_translate("MainWindow", "全选"))
         item = self.table.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "选中"))
         item = self.table.horizontalHeaderItem(1)
@@ -72,4 +59,5 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "商品名"))
         item = self.table.horizontalHeaderItem(3)
         item.setText(_translate("MainWindow", "价格(￥)"))
-        self.checkAll.setText(_translate("MainWindow", "全选"))
+        item = self.table.horizontalHeaderItem(4)
+        item.setText(_translate("MainWindow", "购买数量"))
