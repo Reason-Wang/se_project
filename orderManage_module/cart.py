@@ -15,14 +15,19 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         super().show()
 
     def initTable(self):
+        self.table.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.table.setColumnWidth(0,40)
-        self.table.setColumnWidth(1,80)
+        self.table.setColumnWidth(1,60)
+        self.table.setColumnWidth(2,100)
+        self.table.setColumnWidth(3,80)
+        self.table.setColumnWidth(4,80)
         self.table.setRowCount(self.num)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.checkList = list()
         index=0
         for key in self.id_dict:
             self.checkList.append(QCheckBox())
+            layout=QHBoxLayout()
             self.table.setCellWidget(index,0,self.checkList[index])
             self.checkList[index].stateChanged.connect(self.checkList_changed)
             info=execute_read_query(db_connect,"select name,price from merchan2 where id=%d"%(key))
