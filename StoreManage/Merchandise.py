@@ -71,7 +71,7 @@ class Merchandise_Manage:
             """
             execute_query(connection,insert_origin_info)
         print("insert done")
-        
+
         close(connection)
     
     def get_merchandise_list(self):
@@ -83,8 +83,30 @@ class Merchandise_Manage:
         close(connection)
         return result
 
+    def insert_merchandise(self,merch):
+        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        insert_query=f"""
+            INSERT INTO MERCHAN (ID,NAME,PRICE,NUMBER)
+                VALUES {merch.toCell()}
+        """
+        execute_query(connection,insert_query)
+        close(connection)
+        return
+
+
+    def delete_merchandise(self,merch_id):
+        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        delete_query = f"""
+            DELETE FROM MERCHAN WHERE ID = {merch_id};
+        """
+        execute_query(connection,delete_query)
+        close(connection)
+        return
+
+    def serch_merchandise(self):
+        return
+    def update_merchandise(self):
+        return
 if __name__=='__main__':
     manager = Merchandise_Manage()
     print(manager.merchandise_list)
-
-
