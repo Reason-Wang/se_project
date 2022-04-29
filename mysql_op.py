@@ -1,19 +1,19 @@
 import pymysql
 import time
 import datetime
-
+import psycopg2
 
 class Shop_op:
     def __init__(self):
-        self.host = 'localhost'
-        self.user = 'rock2048'
-        self.passwd = '2247513A*'
-        self.port = 3306
+        self.host = '123.57.48.49'
+        self.user = 'shy'
+        self.passwd = '123456'
+        self.port = 5432
 
     def connect(self):
-        self.conn = pymysql.connect(
-            host=self.host, user=self.user, passwd=self.passwd, port=self.port, charset='utf8')
-        self.conn.select_db('mall_1')
+        self.conn = psycopg2.connect(
+            host=self.host, user=self.user, password=self.passwd, dbname='se')
+        # self.conn.select_db('se')
         self.cur = self.conn.cursor()
 
     def close(self):
@@ -71,15 +71,15 @@ class Shop_op:
 
 class Customer_op:
     def __init__(self):
-        self.host = 'localhost'
-        self.user = 'rock2048'
-        self.passwd = '2247513A*'
-        self.port = 3306
+        self.host = '123.57.48.49'
+        self.user = 'shy'
+        self.passwd = '123456'
+        self.port = 5432
 
     def connect(self):
-        self.conn = pymysql.connect(
-            host=self.host, user=self.user, passwd=self.passwd, port=self.port, charset='utf8')
-        self.conn.select_db('mall_1')
+        self.conn = psycopg2.connect(
+            host=self.host, user=self.user, password=self.passwd, dbname='se')
+        # self.conn.select_db('se')
         self.cur = self.conn.cursor()
 
     def close(self):
