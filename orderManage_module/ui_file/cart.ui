@@ -53,7 +53,7 @@
     </column>
     <column>
      <property name="text">
-      <string>价格(￥)</string>
+      <string>单价</string>
      </property>
     </column>
     <column>
@@ -61,6 +61,37 @@
       <string>购买数量</string>
      </property>
     </column>
+    <column>
+     <property name="text">
+      <string>操作</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QLabel" name="totalLabel">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>100</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="checkBtn">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>200</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>确认订单</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
