@@ -1,4 +1,6 @@
-from ui_file.Ui_cart import Ui_MainWindow
+# from ui_file.Ui_cart import Ui_MainWindow
+# from ui_file.Ui_checkOrder2 import Ui_Form
+from ui_file.Ui_cart_order import Ui_MainWindow
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -9,11 +11,13 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         super().__init__()
         self.account=cus_acc
         self.setupUi(self)
+        #self.stackedWidget.setCurrentWidget(0)
         self.initTable()
         self.checkAll.stateChanged.connect(self.checkAll_changed)
-        self.checkBtn.clicked.connect(self.checkBtn_clicked)
-    def show(self):
-        super().show()
+        self.checkOrderBtn.clicked.connect(self.checkOrderBtn_clicked)
+        self.returnCartBtn.clicked.connect(self.returnCartBtn_clicked)
+    # def show(self):
+    #     super().show()
 
     def initTable(self):
         self.id_dict=getCart(self.account)
@@ -132,10 +136,17 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             event.accept()
         else:
             event.ignore()
-    def checkBtn_clicked(self):
-        pass
-        # co=CheckOrder(self.account,self.id_dict)
-        # self.hide()
-        # co.show()
+    def checkOrderBtn_clicked(self):
+        self.stackedWidget.setCurrentIndex(1)
+    def returnCartBtn_clicked(self):
+        self.stackedWidget.setCurrentIndex(0)
 
+# class CheckOrder(QWidget,Ui_Form):
+#     def __init__(self,cus_acc,id_dict):
+#         super().__init__()
+#         self.setupUi(self)
+#     # def exec(self):
+#     #     super.exec()
+#     # def show(self):
+#     #     super().show()
 
