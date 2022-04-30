@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>50</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -27,23 +27,23 @@
      <string>收货人信息：</string>
     </property>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="con_info">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
-      <width>571</width>
-      <height>81</height>
+      <y>80</y>
+      <width>721</width>
+      <height>61</height>
      </rect>
     </property>
     <column>
      <property name="text">
-      <string>选中</string>
+      <string>姓名</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>姓名</string>
+      <string>联系方式</string>
      </property>
     </column>
     <column>
@@ -56,34 +56,98 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>190</y>
       <width>72</width>
       <height>15</height>
      </rect>
     </property>
     <property name="text">
-     <string>支付方式：</string>
+     <string>取货方式：</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="methodBox">
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>140</y>
+      <y>180</y>
       <width>181</width>
       <height>31</height>
      </rect>
     </property>
     <item>
      <property name="text">
-      <string>在线支付</string>
+      <string>超市配送</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>货到付款</string>
+      <string>自行取货</string>
      </property>
     </item>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>10</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>请完善订单信息</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cartBtn">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>310</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>返回购物车</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="listTable">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>270</y>
+      <width>401</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>商品名</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>单价</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>购买数量</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>240</y>
+      <width>72</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>商品清单：</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
