@@ -1,8 +1,8 @@
 import sys
 import Merchandise
-from storeManage_ui import storeManage_widget
-import storeManage_ui.storeManage_widget
-from PyQt5.QtWidgets import QApplication,QWidget
+from ui.mainwindow import MyMainWindow
+
+from PyQt5.QtWidgets import QApplication,QWidget,QMainWindow
 
 
 if __name__ == '__main__':
@@ -11,6 +11,6 @@ if __name__ == '__main__':
 
 
     app = QApplication(sys.argv)
-    w = storeManage_widget.storeManage_widget()
-    w.show()
+    mainwindow = MyMainWindow.MyMainWindow(parent=None,merchlist=manager.merchandise_list)
+    mainwindow.show()
     app.exec_() 

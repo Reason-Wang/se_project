@@ -81,7 +81,12 @@ class Merchandise_Manage:
         """
         result = execute_read_query(connection,select_all_from_MERCHAN)
         close(connection)
-        return result
+
+        RE = []
+        for tuple in result:
+            RE.append(Merchandise(*tuple))
+        
+        return RE
 
     def insert_merchandise(self,merch):
         connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)

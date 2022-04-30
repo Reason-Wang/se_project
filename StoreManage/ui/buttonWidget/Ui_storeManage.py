@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\l\Desktop\软工大作业\se_project\StoreManage\storeManage_ui\Ui_storeManage.ui'
+# Form implementation generated from reading ui file 'c:\Users\l\Desktop\软工大作业\se_project\StoreManage\ui\buttonWidget\Ui_storeManage.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -26,7 +26,7 @@ class Ui_Form(object):
         self.delete_pushButton.setObjectName("delete_pushButton")
 
         self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        # QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
