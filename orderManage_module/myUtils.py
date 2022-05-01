@@ -8,43 +8,79 @@
 #     con_addr varchar(50),        #收货地址
 #     dis_method method,           #配送方式
 #     order_status order_status    #订单状态
+#     mer_dict text,
 # );
-# create table purchase_info(
+# create table acc_cart(#购物车信息
+#     cus_acc varchar(30),         
+#     cart text,
+#     primary key (cus_acc)
+# );
+# create table purchase_info(#废案
 #     order_id int references order_table(order_id),
 #     mer_id int not null,         #商品id
 #     quantity int not null        #购买数量
 # );
-# create table cart_info(
+# create table cart_info(#废案
 #     cus_acc varchar(30),         #账号
 #     mer_id int not null,         #商品id
 #     quantity int not null,       #购买数量
 #     primary key(cus_acc,mer_id)  
 # );
 
-import os,sys
+
+from distutils.log import info
+import os,sys,ast
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir)))
 from utils.db_utils import *
-# from checkOrder import CheckOrder
-db_connect=create_connection("se","lbc","123456")#数据库连接
-db_connect.autocommit=True
-def getCart(cus_acc):#返回购物车信息
-    temp=execute_read_query(db_connect,"select mer_id,quantity from cart_info where cus_acc='%s'"%cus_acc)
-    id_dict=dict()
-    for i in temp:
-        id_dict[i[0]]=i[1]
-    return id_dict
-def changeCart(cus_acc,id_dict):
-    for key,value in id_dict.items():
-        execute_query(db_connect,"update cart_info set quantity={quantity} where cus_acc='{cus_acc}' and mer_id={id}".format(quantity=value,cus_acc=cus_acc,id=key))
-def deleteCart(cus_acc,id):
-    execute_query(db_connect,"delete from cart_info where cus_acc='{cus_acc}' and mer_id={id}".format(cus_acc=cus_acc,id=id))
-# def show_checkOrder(cus_acc,id_dict):
-#     co=CheckOrder(cus_acc,id_dict)
-#     co.show()
+class db_operate():
+    def __init__(self,db_name,user_name,pass_word):
+        self.db_connect=create_connection(db_name,user_name,pass_word)
+        self.db_connect.autocommit=True
+    def getMerInfo(self,id):
+        info=execute_read_query(self.db_connect,"select name,price from merchan2 where id=%d"%(id))
+        return info
+    def getCart(self,cus_acc):
+        cart_str=(execute_read_query(self.db_connect,"select cart from acc_cart where cus_acc='%s'"%cus_acc))[0][0]
+        #print(cart_str)
+        cart_dict=ast.literal_eval(cart_str)
+        return cart_dict
+    def changeCart(self,cus_acc,cart_dict):
+        execute_query(self.db_connect,"update acc_cart set cart='{cart_dict}' where cus_acc='{cus_acc}'".format(cart_dict=str(cart_dict),cus_acc=cus_acc))
+    def deleteCart(self,cus_acc,id):
+        execute_query(self.db_connect,"delete from cart_info where cus_acc='{cus_acc}' and mer_id={id}".format(cus_acc=cus_acc,id=id))
+    def getCusInfo(self,cus_acc):
+        info_list=execute_read_query(self.db_connect,"select cus_name,cus_phone,cus_addr from customer where cus_acc='%s'"%cus_acc)
+        return info_list[0]
+
+# db_connect=create_connection("se","lbc","123456")#数据库连接
+# db_connect.autocommit=True
+# def getMerInfo(id):
+#     info=execute_read_query(db_connect,"select name,price from merchan2 where id=%d"%(id))
+#     return info
+# def getCart(cus_acc):
+#     cart_str=(execute_read_query(db_connect,"select cart from acc_cart where cus_acc='%s'"%cus_acc))[0][0]
+#     #print(cart_str)
+#     cart_dict=ast.literal_eval(cart_str)
+#     return cart_dict
+# def changeCart(cus_acc,cart_dict):
+#     execute_query(db_connect,"update acc_cart set cart='{cart_dict}' where cus_acc='{cus_acc}'".format(cart_dict=str(cart_dict),cus_acc=cus_acc))
+# def deleteCart(cus_acc,id):
+#     execute_query(db_connect,"delete from cart_info where cus_acc='{cus_acc}' and mer_id={id}".format(cus_acc=cus_acc,id=id))
+# def getCusInfo(cus_acc):
+#     info_str=execute_read_query(db_connect,"select cus_name,cus_phone,cus_addr from customer where cus_acc='%s'"%cus_acc)
+#     print(info_str)
 if __name__ == '__main__':
+    db=db_operate("se","lbc","123456")
+    db.getCusInfo("20191234")
+    pass
     # execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',1,4)")
     # execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',2,5)")
     # execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',3,2)")
-    execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',6,99)")
+    #execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',6,99)")
+    #execute_query(db_connect,"insert into customer(cus_acc,cus_pass,cus_name,cus_phone,cus_addr)values('20191234','abc','李华',123456,'五舍b436')")
     #deleteCart("20191234",1)
     #execute_query(db_connect,"delete from cart_info where cus_acc='20191234' and mer_id=1")
+    #execute_query(db_connect,r"insert into acc_cart(cus_acc,cart)values('20191234','{2:5,3:4,1:7}')")
+    #getCart("20191234")
+    #getCusInfo("20191234")
+    
