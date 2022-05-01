@@ -12,3 +12,9 @@ if __name__ == '__main__':
     mainwindow = MyMainWindow.MyMainWindow(parent=None,merchlist=manager.merchandise_list)
     mainwindow.show()
     app.exec_() 
+
+
+
+def set_DatabaseSlot(mainwindow):
+    return
+    # mainwindow.

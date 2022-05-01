@@ -23,10 +23,10 @@
     </rect>
    </property>
    <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOn</enum>
+    <enum>Qt::ScrollBarAsNeeded</enum>
    </property>
    <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOn</enum>
+    <enum>Qt::ScrollBarAsNeeded</enum>
    </property>
    <property name="widgetResizable">
     <bool>false</bool>

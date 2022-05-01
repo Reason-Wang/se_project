@@ -13,37 +13,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QScrollArea" name="scrollArea">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>4000</width>
-      <height>4000</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOn</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOn</enum>
-    </property>
-    <property name="widgetResizable">
-     <bool>false</bool>
-    </property>
-    <widget class="QWidget" name="scrollAreaWidgetContents">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>4000</width>
-       <height>4000</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
