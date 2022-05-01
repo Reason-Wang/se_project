@@ -14,34 +14,34 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButtonHide">
+   <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>670</y>
-      <width>93</width>
-      <height>28</height>
+      <x>0</x>
+      <y>0</y>
+      <width>4000</width>
+      <height>4000</height>
      </rect>
     </property>
-    <property name="text">
-     <string>hide</string>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
     </property>
-    <property name="autoDefault">
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="widgetResizable">
      <bool>false</bool>
     </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonShow">
-    <property name="geometry">
-     <rect>
-      <x>1100</x>
-      <y>670</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>show</string>
-    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>4000</width>
+       <height>4000</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
