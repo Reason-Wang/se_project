@@ -15,6 +15,5 @@ class merchWidget(QWidget,Ui_Form):
         self.pricelabel.setText(str(merch.price))
         self.numberlabel.setText(str(merch.number))
 
-        # self.pushButtonUpdate.clicked.connect()
     def print_size(self):
         print(self.width(),self.height())

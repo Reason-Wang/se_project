@@ -14,19 +14,19 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(866, 485)
+        Form.resize(129, 156)
         self.insert_pushButton = QtWidgets.QPushButton(Form)
-        self.insert_pushButton.setGeometry(QtCore.QRect(160, 280, 93, 28))
+        self.insert_pushButton.setGeometry(QtCore.QRect(20, 20, 93, 28))
         self.insert_pushButton.setObjectName("insert_pushButton")
         self.updata_pushButton = QtWidgets.QPushButton(Form)
-        self.updata_pushButton.setGeometry(QtCore.QRect(380, 280, 93, 28))
+        self.updata_pushButton.setGeometry(QtCore.QRect(20, 70, 93, 28))
         self.updata_pushButton.setObjectName("updata_pushButton")
         self.delete_pushButton = QtWidgets.QPushButton(Form)
-        self.delete_pushButton.setGeometry(QtCore.QRect(570, 280, 93, 28))
+        self.delete_pushButton.setGeometry(QtCore.QRect(20, 120, 93, 28))
         self.delete_pushButton.setObjectName("delete_pushButton")
 
         self.retranslateUi(Form)
-        # QtCore.QMetaObject.connectSlotsByName(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
