@@ -7,10 +7,11 @@ from ui.updatePage import updatePage
 from PyQt5.QtWidgets import QMainWindow,QGridLayout,QVBoxLayout,QWidget,QHBoxLayout
 
 class MyMainWindow(QMainWindow,Ui_MainWindow):
-    def __init__(self,parent=None,merchlist=[]):
+    def __init__(self,parent=None,merchlist=[],manager=None):
         super(MyMainWindow,self).__init__(parent)
         self.setupUi(self)
         self.merchlist = merchlist
+        self.manager= manager
         self.previewbar = previewBar.previewBarWidget(self,merchlist)
         self.buttonwidget = storeManage_widget.storeManage_widget(self)
         self.layout = QHBoxLayout()
@@ -36,7 +37,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     def delete_item(self,index):
         print(f"delete : {index}")
         print(self.merchlist.pop(index))
-        new_previewBar = previewBar.previewBarWidget(self,self.merchlist)
+        new_previewBar = previewBar.previewBarWidget(self,self.merchlist,self.manager)
         self.previewbar.deleteLater()
         self.previewbar = new_previewBar
         self.initLayout()
@@ -44,7 +45,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     
     def gen_updatePage(self,merch):
         self.hide()
-        self.page = updatePage.updatePageWidget(parent=None,merch=merch)
+        self.page = updatePage.updatePageWidget(parent=None,merch=merch,manager=self.manager)
         self.page.OKpushButton.clicked.connect(self.page_ok)
         self.page.CancelpushButton.clicked.connect(self.page_cancel)
         self.page.show()

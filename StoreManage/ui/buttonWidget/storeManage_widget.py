@@ -2,8 +2,9 @@ from ui.buttonWidget.Ui_storeManage import *
 from PyQt5.QtWidgets import QWidget
 
 class storeManage_widget(QWidget,Ui_Form):
-    def __init__(self,parent=None):
+    def __init__(self,parent=None,manager=None):
         super().__init__(parent)
+        self.manager= manager
         self.setupUi(self)
         self.setup_slot()
 

@@ -110,7 +110,13 @@ class Merchandise_Manage:
 
     def serch_merchandise(self):
         return
-    def update_merchandise(self):
+    def update_merchandise(self,merch):
+        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        update_query = f"""
+            UPDATE MERCHAN SET NAME = '{merch.name}' , PRICE ={merch.price} , NUMBER = {merch.number} WHERE ID = {merch.id};
+        """
+        execute_query(connection,update_query)
+        close(connection)
         return
 if __name__=='__main__':
     manager = Merchandise_Manage()
