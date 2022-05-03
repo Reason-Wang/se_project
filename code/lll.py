@@ -1,6 +1,7 @@
 import math
-
-from moretag import Ui_MainWindow,MyQLabel
+from io import BytesIO
+from PIL import Image,ImageQt
+from moretag import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -26,7 +27,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.cart_dict={}
         self.getCart(self.account)
         print(self.cart_dict)
-        self.button_clicked_signal2.connect(lambda: self.tag_clicked(1))
+        self.button_clicked_signal2.connect(lambda: self.mytag_clicked(1))
         self.button_clicked_signal3.connect(lambda: self.toCart(self.account))
         searchpng = QPixmap('img.png')
         self.searchlabel.setFixedSize(20, 20)
@@ -34,21 +35,25 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.searchlabel.setScaledContents(True)
         self.searchEdit.setPlaceholderText("请输入要查询的商品名称")
         self.searchbutton.clicked.connect(self.search_clicked)
-        self.shownmerchan = [self.merchan1, self.merchan2, self.merchan3, self.merchan4, self.merchan5, self.merchan6]
-        self.showntag = [self.tag1, self.tag2, self.tag3, self.tag4, self.tag5, self.tag6]
+        self.shownname = [self.showbar.nameout1, self.showbar.nameout2, self.showbar.nameout3,
+                             self.showbar.nameout4, self.showbar.nameout5, self.showbar.nameout6]
+        self.shownmerchan = [self.showbar.imageout1, self.showbar.imageout2, self.showbar.imageout3,
+                             self.showbar.imageout4, self.showbar.imageout5, self.showbar.imageout6]
+        self.shownprice = [self.showbar.priceout1, self.showbar.priceout2, self.showbar.priceout3,
+                             self.showbar.priceout4, self.showbar.priceout5, self.showbar.priceout6]
+        self.merout=list(zip(self.shownname,self.shownmerchan,self.shownprice,range(len(self.shownprice))))
+        self.showntag = [self.showbar.tag1, self.showbar.tag2, self.showbar.tag3, self.showbar.tag4, self.showbar.tag5, self.showbar.tag6]
         for i,j in zip(self.showntag,range(len(self.showntag))):
-            i.resize(100,10)
-            i.setFrameShape(QFrame.Box)
-            i.connect_customized_slot(functools.partial(self.tag_clicked,j))
+            i.connect_customized_slot(functools.partial(self.mytag_clicked,j))
         for i, j in zip(self.shownmerchan, range(len(self.shownmerchan))):
             i.connect_customized_slot(functools.partial(self.merdetail, j))
-        self.alltags = ["零食", "饮料", "生活用品", "饼干", "面包", "水果", "康师傅", "桃李", "精美文具", "家具"]
+        self.alltags = ["零食", "饮料", "生活用品", "饼干", "面包", "水果", "康师傅", "桃李", "精美文具", "家具","传统","西方"]
         self.perpagenum = 6
         self.merchannum = execute_read_query(self.connection, 'SELECT COUNT(*) from hccmer')
         self.all_page = math.ceil(self.merchannum[0][0] / self.perpagenum)
         self.totalPage.setText("共 " + str(self.all_page) + " 页")
         result = execute_read_query(self.connection,"SELECT * FROM hccmer")
-        self.merchandise = [[(0, "", 0, 0, "") for i in range(self.perpagenum)] for i in range(self.all_page)]
+        self.merchandise = [[[0, "", "", 0, "",""] for i in range(self.perpagenum)] for i in range(self.all_page)]
         print(self.merchandise)
         k=0
         for i in range(self.all_page):
@@ -92,7 +97,6 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             if page > total_page:
                 self.curPage.setText(str(total_page))
                 self.skipPage.setText(str(total_page))
-
             if page <= 0:
                 self.curPage.setText(str(1))
                 self.skipPage.setText(str(1))
@@ -114,7 +118,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             result = execute_read_query(self.connection,
                                         "SELECT * FROM hccmer WHERE hccmer.name LIKE '%%%%%s%%%%'" % self.searchEdit.text())
             k = 0
-            self.merchandise = [[(0, "", 0, 0, "") for i in range(self.perpagenum)] for i in range(self.all_page)]
+            self.merchandise = [[[0, "", "", 0, "",""] for i in range(self.perpagenum)] for i in range(self.all_page)]
             print(self.merchandise)
             for i in range(0, self.all_page):
                 for j in range(0, self.perpagenum):
@@ -134,20 +138,28 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
 
     def showpage(self):
         if (self.curPage.text() != '0'):
-            self.merchan1.setText(self.merchandise[int(self.curPage.text()) - 1][0][1])
-            self.merchan2.setText(self.merchandise[int(self.curPage.text()) - 1][1][1])
-            self.merchan3.setText(self.merchandise[int(self.curPage.text()) - 1][2][1])
-            self.merchan4.setText(self.merchandise[int(self.curPage.text()) - 1][3][1])
-            self.merchan5.setText(self.merchandise[int(self.curPage.text()) - 1][4][1])
-            self.merchan6.setText(self.merchandise[int(self.curPage.text()) - 1][5][1])
+            for i in self.merout:
+                if(self.merchandise[int(self.curPage.text()) - 1][i[3]][1]!=""):
+                    i[1].setFrameShape(QFrame.Box)
+                    i[1].setPixmap(ImageQt.toqpixmap(Image.open(BytesIO(self.merchandise[int(self.curPage.text()) - 1][i[3]][5]))))
+                else:
+                    i[1].setPixmap(QPixmap(""))
+                    i[1].setFrameShape(QFrame.NoFrame)
+                i[2].setText(str(self.merchandise[int(self.curPage.text()) - 1][i[3]][2]))
+                i[0].setText(self.merchandise[int(self.curPage.text()) - 1][i[3]][1])
         else:
-            for i in self.shownmerchan:
-                i.setText("")
-    def tag_clicked(self,index):
+            for i in self.merout:
+                print("empty！")
+                i[1].setPixmap(QPixmap(""))
+                i[1].setFrameShape(QFrame.NoFrame)
+                i[1].setText("")
+                i[2].setText("")
+                i[0].setText("")
+    def mytag_clicked(self,index):
         for i in self.showntag:
             i.setStyleSheet("color:black")
         self.showntag[index].setStyleSheet("color:blue")
-        if(1<=index<5):
+        if(index not in (4,5)):
             self.skipPage.setText('')
             self.curPage.setText(str(1))
             self.merchannum = execute_read_query(self.connection,
@@ -158,7 +170,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
                 result = execute_read_query(self.connection,
                                             "SELECT * FROM hccmer WHERE hccmer.tag LIKE '%%%%%s%%%%'" % self.showntag[index].text())
                 k = 0
-                self.merchandise = [[(0, "", 0, 0, "") for i in range(self.perpagenum)] for i in range(self.all_page)]
+                self.merchandise = [[[0, "", "", 0, "",""] for i in range(self.perpagenum)] for i in range(self.all_page)]
 
                 print(self.merchandise)
                 for i in range(0, self.all_page):
@@ -179,7 +191,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
                 self.totalPage.setText("共 " + str(self.all_page) + " 页")
                 self.showpage()
 
-        elif index == 0:
+        elif index == 5:
             self.merchandise = self.allmerchandise
             self.all_page = self.maxpage
             self.curPage.setText('1')
@@ -188,11 +200,12 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         else:
             colnum=5
             rownum = math.ceil(len(self.alltags) / colnum)
-            positions = [(i, j) for i in range(rownum) for j in range(colnum)]
+            positions = [(i+1, j) for i in range(rownum) for j in range(colnum)]
             for (position, name) in zip(positions, self.alltags):
-                if (position[0] * colnum + position[1] > len(self.alltags)):
+                if ((position[0]-1) * colnum + position[1] > len(self.alltags)):
                     break;
                 button = QPushButton(self.page_2)
+                button.resize(100,80)
                 button.setText(name)
                 button.clicked.connect(self.choose_tag)
                 self.grid.addWidget(button, *position)
@@ -222,12 +235,11 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
 
     def merdetail(self, merindex):
         self.stackedWidget.setCurrentIndex(2)
-        self.returnpage.clicked.connect(self.myreturn)
-        self.merprice.setText(str(self.merchandise[int(self.curPage.text()) - 1][merindex][2]))
-        self.mername.setText(self.merchandise[int(self.curPage.text()) - 1][merindex][1])
-        self.merstorage.setText("剩余"+str(self.merchandise[int(self.curPage.text()) - 1][merindex][3])+"件本商品")
-        self.mertag.setText(self.merchandise[int(self.curPage.text()) - 1][merindex][4].replace('，',' '))
-        self.mertag.setWordWrap(True)
+        self.seemer.returnpage.clicked.connect(self.myreturn)
+        self.seemer.merimage.setPixmap(ImageQt.toqpixmap(Image.open(BytesIO(self.merchandise[int(self.curPage.text()) - 1][merindex][5]))))
+        self.seemer.merprice.setText(str(self.merchandise[int(self.curPage.text()) - 1][merindex][2]))
+        self.seemer.mername.setText(self.merchandise[int(self.curPage.text()) - 1][merindex][1])
+        self.seemer.merstorage.setText("剩余"+str(self.merchandise[int(self.curPage.text()) - 1][merindex][3])+"件本商品")
         for j in self.labellist:
             j.setText("")
         self.labellist=list()
@@ -236,17 +248,17 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         for j in i:
                  print(j)
                  dettag=MyQLabel(self.page_3)
-                 dettag.setGeometry(QRect(70+100*k, 330, 200, 30))
+                 dettag.setGeometry(QRect(100+100*k, 590, 200, 30))
                  self.labellist.append(dettag)
                  self.labellist[k].show()
                  k=k+1
                  dettag.setText(j)
                  dettag.connect_customized_slot(self.choose_tag)
-        self.addnum.setMaximum(self.merchandise[int(self.curPage.text()) - 1][merindex][3])
-        self.addnum.setMinimum(0)
-        self.addbutton.clicked.connect(lambda:self.add_clicked(merindex))
+        self.seemer.addnum.setMaximum(self.merchandise[int(self.curPage.text()) - 1][merindex][3])
+        self.seemer.addnum.setMinimum(0)
+        self.seemer.addbutton.clicked.connect(lambda:self.add_clicked(merindex))
     def add_clicked(self,merindex):
-        if (self.addnum.value() == 0):
+        if (self.seemer.addnum.value() == 0):
             return
         elif (self.account != ""):
             reply1 = QMessageBox.question(self, 'Message',
@@ -256,9 +268,9 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
                 a = self.merchandise[int(self.curPage.text()) - 1][merindex][0]
                 if (a not in self.cart_dict.keys()):
                     self.cart_dict[a] = 0
-                self.cart_dict[a] += self.addnum.value()
+                self.cart_dict[a] += self.seemer.addnum.value()
                 self.statusBar().showMessage("已加入")
-                self.addnum.setValue(0)
+                self.seemer.addnum.setValue(0)
                 return
             else:
                 return
@@ -271,8 +283,8 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             else:
                 return
     def myreturn(self):
-        self.addnum.setValue(0)
-        self.tag_clicked(0)
+        self.seemer.addnum.setValue(0)
+        self.mytag_clicked(5)
         self.stackedWidget.setCurrentIndex(0)
         self.statusBar().showMessage("")
     def toCart(self,cus_acc):
