@@ -1,6 +1,7 @@
 from ui_mainwindow import Ui_MainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from example_module.example_widget import ExampleWidget
+from order_module.order_screen import orderScreen
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -9,8 +10,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # usage of example widget
-        self.example_widget = ExampleWidget()
-        self.pushButton_OK.clicked.connect(self.example_widget.show)
+
+        #self.example_widget = ExampleWidget()
+        self.order_screen = orderScreen()
+        self.pushButton_OK.clicked.connect(self.order_screen.show)
+
+        #self.pushButton_OK.clicked.connect(self.example_widget.show)
 
 
     def show(self):
