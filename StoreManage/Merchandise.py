@@ -143,6 +143,137 @@ class Merchandise_Manage:
         self.merchandise_list = self.get_merchandise_list()
         # close(connection)
         return
+
+
+
+
+# #json version
+# import pickle
+# class Merchandise:
+#     def __init__(self,id,name,price,number,cat=[],info=""):
+#         self.id=id          #商品唯一标识
+#         self.name=name        #商品名称
+#         self.price=price       #商品价格
+#         self.number=number      #商品库存量
+#         self.cat = cat
+#         self.info = info
+#         self.pickle=[self.cat,self.info]
+
+#     def toCell(self):
+#         return (self.name,self.price,self.number)
+
+#     def toJson(self):
+#         print(pickle.dumps(self.pickle))
+#         return pickle.dumps(self.pickle)
+
+# class Merchandise_Manage:
+#     def __init__(self):
+#         self.user=""
+#         self.db_user="lhd"
+#         self.passwd="123456"
+#         self.tablename = "MERCHAN_SERIAL_ID"
+#         self.connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+#         self.connection.autocommit = True
+#         # self.init_MERCHAN_table()
+#         self.merchandise_list=self.get_merchandise_list()
+
+#     #only for init table
+#     def init_MERCHAN_table(self):
+#         connection = self.connection
+
+#         create_MERCHAN_table = f"""
+#             CREATE TABLE IF NOT EXISTS {self.tablename}(
+#             ID SERIAL PRIMARY KEY,
+#             NAME VARCHAR(30),
+#             PRICE INT,
+#             NUMBER INT 
+#             )
+#         """
+#         execute_query(connection,create_MERCHAN_table)
+
+#         origin_list=[]
+#         for i in range(10):
+#             id=i
+#             name = "name_" + str(i)
+#             price = int(random()*100)
+#             number = 100
+#             origin_list.append(Merchandise(i,name,price,number))
+#         for item in origin_list:
+#             insert_origin_info = f"""
+#             INSERT INTO {self.tablename} (NAME,PRICE,NUMBER)
+#                 VALUES {item.toCell()}
+#             """
+#             execute_query(connection,insert_origin_info)
+#         print("insert done")
+
+#         # close(connection)
+    
+#     def get_merchandise_list(self):
+#         connection = self.connection
+#         select_all_from_MERCHAN=f"""
+#             SELECT * FROM {self.tablename} ORDER BY ID;
+#         """
+#         result = execute_read_query(connection,select_all_from_MERCHAN)
+#         # close(connection)
+
+#         RE = []
+#         for tuple in result:
+#             RE.append(Merchandise(*tuple))
+        
+#         return RE
+
+#     def insert_merchandise(self,merch):
+#         connection = self.connection
+#         insert_query=f"""
+#             INSERT INTO {self.tablename} (NAME,PRICE,NUMBER)
+#                 VALUES {merch.toCell()}
+#         """
+#         execute_query(connection,insert_query)
+#         self.merchandise_list = self.get_merchandise_list()
+#         # close(connection)
+#         return
+
+
+#     def delete_merchandise(self,merch_id):
+#         connection = self.connection
+#         delete_query = f"""
+#             DELETE FROM {self.tablename} WHERE ID = {merch_id};
+#         """
+#         execute_query(connection,delete_query)
+#         self.merchandise_list = self.get_merchandise_list()
+#         # close(connection)
+#         return
+
+#     def delete_merchandise_byOBJ(self,merch):
+#         connection = self.connection
+#         delete_query = f"""
+#             DELETE FROM {self.tablename} WHERE ID = {merch.id};
+#         """
+#         execute_query(connection,delete_query)
+#         self.merchandise_list = self.get_merchandise_list()
+#         # close(connection)
+#         return
+
+#     def serch_merchandise(self,merch_id):
+#         connection = self.connection
+#         serch_query = f"""
+#             SELECT * FROM {self.tablename} WHERE ID = {merch_id};
+#         """
+#         result = execute_read_query(connection,serch_query)
+#         if(len(result)==1):
+#             return Merchandise(*result[0])
+#         return None
+#     def update_merchandise(self,merch):
+#         connection = self.connection
+#         update_query = f"""
+#             UPDATE {self.tablename} SET NAME = '{merch.name}' , PRICE ={merch.price} , NUMBER = {merch.number} WHERE ID = {merch.id};
+#         """
+#         execute_query(connection,update_query)
+#         self.merchandise_list = self.get_merchandise_list()
+#         # close(connection)
+#         return
 if __name__=='__main__':
-    manager = Merchandise_Manage()
-    print(manager.merchandise_list)
+    merch=Merchandise(1,2,3,4)
+    merch.toJson()
+    # manager = Merchandise_Manage()
+    # print(manager.merchandise_list)

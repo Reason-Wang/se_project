@@ -25,8 +25,8 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     def initLayout(self):
         if self.mylayout:
             self.mylayout.deleteLater()
-        if self.dialog:
-            self.dialog.deleteLater()
+        # if self.dialog:
+        #     self.dialog.deleteLater()
 
         self.mylayout = QHBoxLayout()
         self.layout.addLayout(self.mylayout)
@@ -67,6 +67,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
     def gen_updatePage(self,merch):
         self.hide()
         self.page = updatePage.updatePageWidget(parent=None,merch=merch,manager=self.manager)
+        self.page.OKpushButton.setText("更新")
         self.page.OKpushButton.clicked.connect(self.page_ok)
         self.page.CancelpushButton.clicked.connect(self.page_cancel)
         self.page.show()
@@ -126,7 +127,9 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
 
 
     def insert_merch(self):
-        return
+        self.gen_updatePage(merch=None)
+        self.page.OKpushButton.setText("上架")
+        
 
     def delete_merch(self):
         print(self.dialog)

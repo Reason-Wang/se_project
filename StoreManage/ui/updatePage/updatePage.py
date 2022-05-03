@@ -12,13 +12,15 @@ class updatePageWidget(QWidget,Ui_Form):
         self.manager=manager
         self.set_text()
         # self.set_slot()
-        # self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
     
     def set_text(self):
-        self.nameEdit.setText(f"{self.merch.name}")
-        self.priceEdit.setText(f"{self.merch.price}")
-        self.numberEdit.setText(f"{self.merch.number}")
-        
+        if self.merch:
+            self.nameEdit.setText(f"{self.merch.name}")
+            self.priceEdit.setText(f"{self.merch.price}")
+            self.numberEdit.setText(f"{self.merch.number}")
+        else:
+            self.merch=Merchandise("","","","")
         return
 
     def submit_Info(self):
@@ -44,8 +46,10 @@ class updatePageWidget(QWidget,Ui_Form):
         self.merch.price=self.priceEdit.text()
         self.merch.number=self.numberEdit.text()
 
-        self.manager.update_merchandise(self.merch)
-
+        if self.OKpushButton.text()=="更新":
+            self.manager.update_merchandise(self.merch)
+        elif self.OKpushButton.text()=="上架":
+            self.manager.insert_merchandise(self.merch)
         print("submit info")
         return True
 

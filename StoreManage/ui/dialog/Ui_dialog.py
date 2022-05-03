@@ -22,7 +22,7 @@ class Ui_Dialog(object):
         self.pushButton_2.setGeometry(QtCore.QRect(230, 120, 93, 28))
         self.pushButton_2.setObjectName("pushButton_2")
         self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(80, 50, 72, 15))
+        self.label.setGeometry(QtCore.QRect(30, 60, 151, 16))
         self.label.setObjectName("label")
         self.textEdit = QtWidgets.QTextEdit(Dialog)
         self.textEdit.setGeometry(QtCore.QRect(190, 50, 121, 31))
