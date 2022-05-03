@@ -125,8 +125,15 @@ class Merchandise_Manage:
         # close(connection)
         return
 
-    def serch_merchandise(self):
-        return
+    def serch_merchandise(self,merch_id):
+        connection = self.connection
+        serch_query = f"""
+            SELECT * FROM {self.tablename} WHERE ID = {merch_id};
+        """
+        result = execute_read_query(connection,serch_query)
+        if(len(result)==1):
+            return Merchandise(*result[0])
+        return None
     def update_merchandise(self,merch):
         connection = self.connection
         update_query = f"""

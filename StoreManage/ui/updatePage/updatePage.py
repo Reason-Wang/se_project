@@ -12,7 +12,7 @@ class updatePageWidget(QWidget,Ui_Form):
         self.manager=manager
         self.set_text()
         # self.set_slot()
-        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
+        # self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
     
     def set_text(self):
         self.nameEdit.setText(f"{self.merch.name}")

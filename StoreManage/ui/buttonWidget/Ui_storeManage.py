@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(137, 222)
+        Form.resize(143, 333)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.insert_pushButton = QtWidgets.QPushButton(Form)
@@ -32,6 +32,11 @@ class Ui_Form(object):
         self.delete_pushButton.setMaximumSize(QtCore.QSize(115, 28))
         self.delete_pushButton.setObjectName("delete_pushButton")
         self.verticalLayout.addWidget(self.delete_pushButton)
+        self.tongji_pushButton = QtWidgets.QPushButton(Form)
+        self.tongji_pushButton.setMinimumSize(QtCore.QSize(115, 28))
+        self.tongji_pushButton.setMaximumSize(QtCore.QSize(115, 28))
+        self.tongji_pushButton.setObjectName("tongji_pushButton")
+        self.verticalLayout.addWidget(self.tongji_pushButton)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -42,3 +47,4 @@ class Ui_Form(object):
         self.insert_pushButton.setText(_translate("Form", "上架商品"))
         self.updata_pushButton.setText(_translate("Form", "修改商品信息"))
         self.delete_pushButton.setText(_translate("Form", "下架商品"))
+        self.tongji_pushButton.setText(_translate("Form", "统计"))

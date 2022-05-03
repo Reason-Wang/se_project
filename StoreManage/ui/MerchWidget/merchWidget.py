@@ -10,8 +10,6 @@ class merchWidget(QWidget,Ui_Form):
         self.print_size()
     
     def set_content(self,merch):
-        # print("set_content")
-        # print(merch.toCell())
         self.namelable.setText(str(merch.name))
         self.pricelabel.setText(str(merch.price))
         self.numberlabel.setText(str(merch.number))

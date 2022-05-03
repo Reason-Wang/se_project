@@ -1,3 +1,4 @@
+
 from ui.buttonWidget.Ui_storeManage import *
 from PyQt5.QtWidgets import QWidget
 
@@ -9,11 +10,8 @@ class storeManage_widget(QWidget,Ui_Form):
         self.setup_slot()
 
     def setup_slot(self):
-        print("setup_slot in widget")
-        self.delete_pushButton.clicked.connect(self.showINFO)
-        self.insert_pushButton.clicked.connect(self.showINFO)
-        self.updata_pushButton.clicked.connect(self.showINFO)
-        
+        print("setup_slot in widget")        
+      
 
     def showINFO(self):
         print(self.sender())
