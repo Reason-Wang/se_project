@@ -9,7 +9,74 @@ from ui.shop_main_window import *
 
 from ui.shop_info_window import *
 from send_data import *
+import psycopg2
+import time
 
+
+class Shop_op:
+    def __init__(self):
+        self.host = '123.57.48.49'
+        self.user = 'shy'
+        self.passwd = '123456'
+        self.port = 5432
+
+    def connect(self):
+        self.conn = psycopg2.connect(
+            host=self.host, user=self.user, password=self.passwd, dbname='se')
+        # self.conn.select_db('se')
+        self.cur = self.conn.cursor()
+
+    def close(self):
+        self.cur.close()
+        self.conn.close()
+
+    def register(self, user, passwd, shop_name, phone, addr):
+        self.connect()
+        self.cur.execute('select shop_acc from shop where shop_acc=%s', [user])
+        data = self.cur.fetchone()
+        if data is not None:
+            self.close()
+            return False
+        value = [user, passwd, shop_name, phone, addr, time.strftime(
+            '%Y-%m-%d %H:%M:%S', time.localtime(time.time()))]
+        self.cur.execute('insert into shop values(%s,%s,%s,%s,%s,%s)', value)
+        self.conn.commit()
+        self.close()
+        return True
+
+    def login(self, user, passwd):
+        self.connect()
+        value = [user, passwd]
+        self.cur.execute(
+            'select shop_acc,shop_pass from shop where shop_acc=%s and shop_pass=%s', value)
+        data = self.cur.fetchone()
+        if data is not None:
+            self.close()
+            return True
+        self.close()
+        return False
+
+    def shop_info(self, user):
+        self.connect()
+        self.cur.execute(
+            'select shop_acc,shop_pass,shop_name,shop_phone,shop_addr,shop_time from shop where shop_acc=%s', [user])
+        data = self.cur.fetchone()
+        self.close()
+        return data
+
+    def update_shop(self, user, passwd, shop_name, phone, addr):
+        self.connect()
+        try:
+            value = [passwd, shop_name, phone, addr, user]
+            self.cur.execute(
+                'update shop set shop_pass=%s,shop_name=%s,shop_phone=%s,shop_addr=%s where shop_acc=%s', value)
+            self.conn.commit()
+        except Exception as e:
+            self.conn.rollback()
+            self.close()
+            return False
+        self.close()
+        return True
 
 class Register(QMainWindow, Ui_register_window):
     def __init__(self, parent=None):
@@ -34,11 +101,13 @@ class Register(QMainWindow, Ui_register_window):
         data = {'id': 'shop', 'type': 'register', 'user': username,
                 'passwd': pass1, 'shop_name': shop_name, 'phone': phone, 'addr': addr}
         print("111")
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
+        op1 = Shop_op()
+        if op1.register(data['user'], data['passwd'], data['shop_name'], data['phone'], data['addr']):
+            data = {'result': 'success'}
+        else:
+            data = {'result': 'fail'}
         print("111")
-        if recv['result'] == 'success':
+        if data['result'] == 'success':
             QMessageBox.information(self, "注册", "注册成功", QMessageBox.Yes)
         else:
             QMessageBox.information(self, "注册", "注册失败", QMessageBox.Yes)
@@ -64,10 +133,12 @@ class Login(QMainWindow, Ui_login_window):
             return
         data = {'id': 'shop', 'type': 'login',
                 'user': username, 'passwd': password}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        if recv['result'] == 'success':
+        op1 = Shop_op()
+        if op1.login(data['user'], data['passwd']):
+            data = {'result': 'success'}
+        else:
+            data = {'result': 'fail'}
+        if data['result'] == 'success':
             QMessageBox.information(self, "登录", "登录成功", QMessageBox.Yes)
             user = username
             myWin2.hide()
@@ -129,10 +200,9 @@ class Shopinfo(QMainWindow, Ui_shop_info):
         addr = self.addr.currentText()
         data = {'id': 'shop', 'type': 'update_shop', 'user': user,
                 'passwd': pass1, 'shop_name': shop_name, 'phone': phone, 'addr': addr}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        if recv['result'] == 'success':
+        op1 = Shop_op()
+
+        if op1.update_shop(data['user'], data['passwd'], data['shop_name'], data['phone'], data['addr']):
             QMessageBox.information(self, "修改店铺信息", "修改成功", QMessageBox.Yes)
         else:
             QMessageBox.information(self, "修改店铺信息", "修改失败", QMessageBox.Yes)
@@ -140,17 +210,16 @@ class Shopinfo(QMainWindow, Ui_shop_info):
 
     def load(self):
         data = {'id': 'shop', 'type': 'shop_info', 'user': user}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        self.username.setText(recv['result'][0])
+        op1 = Shop_op()
+        data = {'result': op1.shop_info(data['user'])}
+        self.username.setText(data['result'][0])
         self.username.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.pass1.setText(recv['result'][1])
-        self.pass2.setText(recv['result'][1])
-        self.shop_name.setText(recv['result'][2])
-        self.phone.setText(recv['result'][3])
-        self.addr.setCurrentText(recv['result'][4])
-        self.shop_time.setText(recv['result'][5])
+        self.pass1.setText(data['result'][1])
+        self.pass2.setText(data['result'][1])
+        self.shop_name.setText(data['result'][2])
+        self.phone.setText(data['result'][3])
+        self.addr.setCurrentText(data['result'][4])
+        self.shop_time.setText(data['result'][5])
         self.shop_time.setFocusPolicy(QtCore.Qt.NoFocus)
 
 

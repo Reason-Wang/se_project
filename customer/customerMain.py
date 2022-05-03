@@ -8,6 +8,75 @@ from ui.cus_main_window import *
 
 from ui.cus_info_window import *
 from send_data import *
+import psycopg2
+import time
+
+class Customer_op:
+    def __init__(self):
+        self.host = '123.57.48.49'
+        self.user = 'shy'
+        self.passwd = '123456'
+        self.port = 5432
+
+    def connect(self):
+        self.conn = psycopg2.connect(
+            host=self.host, user=self.user, password=self.passwd, dbname='se')
+        # self.conn.select_db('se')
+        self.cur = self.conn.cursor()
+
+    def close(self):
+        self.cur.close()
+        self.conn.close()
+
+    def register(self, user, passwd, cus_name, phone, addr):
+        self.connect()
+        self.cur.execute(
+            'select cus_acc from customer where cus_acc=%s', [user])
+        data = self.cur.fetchone()
+        if data is not None:
+            self.close()
+            return False
+        value = [user, passwd, cus_name, phone, addr]
+        self.cur.execute('insert into customer values(%s,%s,%s,%s,%s)', value)
+        self.conn.commit()
+        self.close()
+        return True
+
+    def login(self, user, passwd):
+        self.connect()
+        value = [user, passwd]
+        self.cur.execute(
+            'select cus_acc,cus_pass from customer where cus_acc=%s and cus_pass=%s', value)
+        data = self.cur.fetchone()
+        if data is not None:
+            self.close()
+            return True
+        self.close()
+        return False
+
+
+
+    def cus_info(self, user):
+        self.connect()
+        self.cur.execute(
+            'select cus_acc,cus_pass,cus_name,cus_phone,cus_addr from customer where cus_acc=%s', [user])
+        data = self.cur.fetchone()
+        self.close()
+        return data
+
+    def update_cus(self, user, passwd, cus_name, phone, addr):
+        self.connect()
+        try:
+            value = [passwd, cus_name, phone, addr, user]
+            self.cur.execute(
+                'update customer set cus_pass=%s,cus_name=%s,cus_phone=%s,cus_addr=%s where cus_acc=%s', value)
+            self.conn.commit()
+        except Exception as e:
+            self.conn.rollback()
+            self.close()
+            return False
+        self.close()
+        return True
 
 
 class Register(QMainWindow, Ui_register_window):
@@ -33,10 +102,12 @@ class Register(QMainWindow, Ui_register_window):
         data = {'id': 'customer', 'type': 'register', 'user': username,
                 'passwd': pass1, 'cus_name': cus_name, 'phone': phone, 'addr': addr}
         # print(json.dumps(data))
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        if recv['result'] == 'success':
+        op1 = Customer_op()
+        if op1.register(data['user'], data['passwd'], data['cus_name'], data['phone'], data['addr']):
+            data = {'result': 'success'}
+        else:
+            data = {'result': 'fail'}
+        if data['result'] == 'success':
             QMessageBox.information(self, "注册", "注册成功", QMessageBox.Yes)
         else:
             QMessageBox.information(self, "注册", "注册失败", QMessageBox.Yes)
@@ -62,10 +133,12 @@ class Login(QMainWindow, Ui_login_window):
             return
         data = {'id': 'customer', 'type': 'login',
                 'user': username, 'passwd': password}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        if recv['result'] == 'success':
+        op1 = Customer_op()
+        if op1.login(data['user'], data['passwd']):
+            data = {'result': 'success'}
+        else:
+            data = {'result': 'fail'}
+        if data['result'] == 'success':
             QMessageBox.information(self, "登录", "登录成功", QMessageBox.Yes)
             user = username
             myWin2.hide()
@@ -113,10 +186,12 @@ class Cusinfo(QMainWindow, Ui_cus_info):
         addr = self.addr.text()
         data = {'id': 'customer', 'type': 'update_cus', 'user': user,
                 'passwd': pass1, 'cus_name': cus_name, 'phone': phone, 'addr': addr}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        if recv['result'] == 'success':
+        op1 = Customer_op()
+        if op1.update_cus(data['user'], data['passwd'], data['cus_name'], data['phone'], data['addr']):
+            data = {'result': 'success'}
+        else:
+            data = {'result': 'fail'}
+        if data['result'] == 'success':
             QMessageBox.information(self, "修改顾客信息", "修改成功", QMessageBox.Yes)
         else:
             QMessageBox.information(self, "修改顾客信息", "修改失败", QMessageBox.Yes)
@@ -124,16 +199,15 @@ class Cusinfo(QMainWindow, Ui_cus_info):
 
     def load(self):
         data = {'id': 'customer', 'type': 'cus_info', 'user': user}
-        s = Send_data()
-        recv = s.message(data)
-        s.close()
-        self.username.setText(recv['result'][0])
+        op1 = Customer_op()
+        data = {'result': op1.cus_info(data['user'])}
+        self.username.setText(data['result'][0])
         self.username.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.pass1.setText(recv['result'][1])
-        self.pass2.setText(recv['result'][1])
-        self.cus_name.setText(recv['result'][2])
-        self.phone.setText(recv['result'][3])
-        self.addr.setText(recv['result'][4])
+        self.pass1.setText(data['result'][1])
+        self.pass2.setText(data['result'][1])
+        self.cus_name.setText(data['result'][2])
+        self.phone.setText(data['result'][3])
+        self.addr.setText(data['result'][4])
 
 
 if __name__ == '__main__':
