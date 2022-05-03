@@ -1,5 +1,5 @@
 # create type method as enum('超市配送','自行取货');
-# create type order_status as enum('未付款','已付款','已准备','已发货',' 完成订单','申请退款','订单取消');
+# create type order_status as enum('未付款','已付款','已准备','已发货',' 完成订单','申请退款','订单取消','已退款');
 # create table order_table(
 #     order_id serial primary key, #订单编号
 #     cus_acc varchar(30) not null,#账号
@@ -11,6 +11,14 @@
 #     mer_dict text,               #商品字典
 #     total real                   #总金额
 # );
+    # create table cus_con_info(   #收货人信息
+    # cus_acc varchar(30) not null,
+    # con_name varchar(20),
+    # con_phone int,
+    # con_addr varchar(50)
+    # con_seq int not null,
+    #primary key (cus_acc,con_seq)
+    # );
 # create table acc_cart(#购物车信息
 #     cus_acc varchar(30),         
 #     cart text,
@@ -56,9 +64,18 @@ class db_operate():
     def close(self):
         close(self.db_connect)
         print("DB closed")
+
+    #获取用户信息
+    def getCusInfo(self,cus_acc):
+        info_list=execute_read_query(self.db_connect,"select cus_name,cus_phone,cus_addr from customer where cus_acc='%s'"%cus_acc)
+        return info_list[0]
+    
+    #获取商品信息
     def getMerInfo(self,id):
         info=execute_read_query(self.db_connect,"select name,price from merchan2 where id=%d"%(id))
         return info
+    
+    #购物车表相关操作
     def getCart(self,cus_acc):
         cart_str=(execute_read_query(self.db_connect,"select cart from acc_cart where cus_acc='%s'"%cus_acc))[0][0]
         #print(cart_str)
@@ -68,9 +85,8 @@ class db_operate():
         execute_query(self.db_connect,"update acc_cart set cart='{cart_dict}' where cus_acc='{cus_acc}'".format(cart_dict=str(cart_dict),cus_acc=cus_acc))
     def deleteCart(self,cus_acc,id):
         execute_query(self.db_connect,"delete from cart_info where cus_acc='{cus_acc}' and mer_id={id}".format(cus_acc=cus_acc,id=id))
-    def getCusInfo(self,cus_acc):
-        info_list=execute_read_query(self.db_connect,"select cus_name,cus_phone,cus_addr from customer where cus_acc='%s'"%cus_acc)
-        return info_list[0]
+    
+    #订单表相关操作
     def getOrderHistory(self,cus_acc):
         orderList=execute_read_query(self.db_connect,"select * from order_table where cus_acc='%s'"%cus_acc)
         order_dict=dict()
@@ -85,7 +101,22 @@ class db_operate():
     def changeOrderStatus(self,order_id,status:str):
         execute_query(self.db_connect,f"update order_table set order_status='{status}' where order_id={order_id}")
 
-
+    #用户收货人信息表相关,cus_con_info
+    def changeCus_con_info(self,cus_acc,con_info,con_seq):
+        execute_query(self.db_connect,f"update cus_con_info set con_name='{con_info[0]}',con_phone='{con_info[1]}',con_addr='{con_info[2]}' where cus_acc='{cus_acc}' and con_seq='{con_seq}'")
+    def addCus_con_info(self,cus_acc,con_info,con_seq):
+        execute_query(self.db_connect,f"insert into cus_con_info values('{cus_acc}','{con_info[0]}',{con_info[1]},'{con_info[2]}',{con_seq})")
+    def deleteCus_con_info(self,cus_acc,con_seq,row):
+        execute_query(self.db_connect,f"delete from cus_con_info where cus_acc='{cus_acc}' and con_seq='{con_seq}'")
+        while(con_seq<row-1):
+            execute_query(self.db_connect,f"update cus_con_info set con_seq={con_seq} where cus_acc='{cus_acc}' and con_seq='{con_seq+1}'")
+            con_seq+=1
+    def get_con_info_dict(self,cus_acc):
+        temp=execute_read_query(self.db_connect,f"select * from cus_con_info where cus_acc='{cus_acc}'")
+        con_info_dict=dict()
+        for t in temp:
+            con_info_dict[t[4]]=t[1:4]
+        return con_info_dict
 # db_connect=create_connection("se","lbc","123456")#数据库连接
 # db_connect.autocommit=True
 # def getMerInfo(id):
@@ -104,15 +135,13 @@ class db_operate():
 #     info_str=execute_read_query(db_connect,"select cus_name,cus_phone,cus_addr from customer where cus_acc='%s'"%cus_acc)
 #     print(info_str)
 if __name__ == '__main__':
-    #db=db_operate("se","lbc","123456")
-    #db.getOrderHistory("20191234")
+    db=db_operate("se","lbc","123456")
+    db.get_con_info_dict("tst")
     # test_dict={7:2,2:3}
     # con_info=["小王","123456","四舍"]
     # test=OrderItem("20191234",test_dict,con_info,"超市配送","已付款")
     # test_db=db_operate("se","lbc","123456")
     # test_db.addOrder(test)
-    test=dict()
-    print(test)
     pass
     # execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',1,4)")
     # execute_query(db_connect,"insert into cart_info(cus_acc,mer_id,quantity)values('20191234',2,5)")

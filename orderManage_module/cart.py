@@ -1,8 +1,11 @@
 # from ui_file.Ui_cart import Ui_MainWindow
 # from ui_file.Ui_checkOrder2 import Ui_Form
+from ast import Delete
+from tkinter import Widget
 from ui_file.Ui_cart_order import Ui_MainWindow
 from ui_file.Ui_pay import Ui_Dialog
 from ui_file.Ui_detail import Ui_Form
+from ui_file.Ui_input import Ui_Dialog as Ui_input
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -27,15 +30,16 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.num=len(self.cart_dict)
         self.money=0
         self.table.clearContents()
-        self.table.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         #选中、id、商品名、单价、数量、操作
-        self.table.setColumnWidth(0,40)
-        self.table.setColumnWidth(1,60)
-        self.table.setColumnWidth(2,100)
-        self.table.setColumnWidth(3,80)
-        self.table.setColumnWidth(4,80)
+        # self.table.setColumnWidth(0,40)
+        # self.table.setColumnWidth(1,60)
+        # self.table.setColumnWidth(2,100)
+        # self.table.setColumnWidth(3,80)
+        # self.table.setColumnWidth(4,80)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setRowCount(self.num)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.checkBox_list = list()
         self.spList=list()
@@ -141,25 +145,108 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         value=self.spList[index].value()
         self.cart_dict[key]=value
     def closeEvent(self,event):
-        reply = QMessageBox.question(self, 'Message',
-            "确认退出?", QMessageBox.Yes | 
-            QMessageBox.No, QMessageBox.No)
+        self.db.changeCart(self.account,self.cart_dict)
+        self.db.close()
+        # reply = QMessageBox.question(self, 'Message',
+        #     "确认退出?", QMessageBox.Yes | 
+        #     QMessageBox.No, QMessageBox.No)
 
-        if reply == QMessageBox.Yes:
-            self.db.changeCart(self.account,self.cart_dict)
-            self.db.close()
-            event.accept()
-        else:
-            event.ignore()
+        # if reply == QMessageBox.Yes:
+        #     self.db.changeCart(self.account,self.cart_dict)
+        #     self.db.close()
+        #     event.accept()
+        # else:
+        #     event.ignore()
     def init_con_info(self):
-        con_info=self.db.getCusInfo(self.account)
+        # con_info=self.db.getCusInfo(self.account)
+        # self.con_table.setColumnWidth(0,100)
+        # self.con_table.setColumnWidth(1,180)
+        # self.con_table.horizontalHeader().setStretchLastSection(True)
+        # self.con_table.setRowCount(1)
+        # for i in range(3):
+        #     self.con_table.setItem(0,i,QTableWidgetItem(con_info[i]))
+        #     self.con_table.item(0,i).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.con_info_dict=self.db.get_con_info_dict(self.account)
+        if(len(self.con_info_dict)==0):
+            self.con_info_dict[0]=self.db.getCusInfo(self.account)
+            self.db.addCus_con_info(self.account,self.con_info_dict[0],0)
         self.con_table.setColumnWidth(0,100)
         self.con_table.setColumnWidth(1,180)
         self.con_table.horizontalHeader().setStretchLastSection(True)
-        self.con_table.setRowCount(1)
-        for i in range(3):
-            self.con_table.setItem(0,i,QTableWidgetItem(con_info[i]))
-            self.con_table.item(0,i).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.con_table.verticalHeader().setHidden(True)
+        self.con_table.setRowCount(len(self.con_info_dict))
+        self.con_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.con_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.select_list=list()
+        for con_seq,con_info in self.con_info_dict.items():
+            self.select_list.append(QCheckBox())
+            self.select_list[-1].stateChanged.connect(functools.partial(self.select_list_changed,con_seq))
+            hLayout = QHBoxLayout()
+            hLayout.addWidget(self.select_list[-1])
+            hLayout.setAlignment(self.select_list[-1], Qt.AlignCenter)
+            hLayout.setContentsMargins(10, 0, 10, 0)
+            widget = QWidget()
+            widget.setLayout(hLayout)
+            self.con_table.setCellWidget(con_seq,0,widget)
+            for i in range(3):
+                self.con_table.setItem(con_seq,i+1,QTableWidgetItem(str(con_info[i])))
+                self.con_table.item(con_seq,i+1).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            if(con_seq==0):
+                addBtn=QPushButton("添加")
+                addBtn.clicked.connect(self.addBtn_con_clicked)
+                hLayout3 = QHBoxLayout()
+                hLayout3.addWidget(addBtn)
+                hLayout3.setAlignment(addBtn, Qt.AlignCenter)
+                hLayout3.setContentsMargins(10, 0, 10, 0)
+                widget3 = QWidget()
+                widget3.setLayout(hLayout3)
+                self.con_table.setCellWidget(con_seq,4,widget3)
+            else:
+                changeBtn=QPushButton("修改")
+                changeBtn.clicked.connect(functools.partial(self.change_con_clicked,con_seq))
+                deleteBtn=QPushButton("删除")
+                deleteBtn.clicked.connect(functools.partial(self.delete_con_clicked,con_seq))
+                hLayout2=QHBoxLayout()
+                hLayout2.addWidget(changeBtn)
+                hLayout2.addWidget(deleteBtn)
+                widget2 = QWidget()
+                widget2.setLayout(hLayout2)
+                self.con_table.setCellWidget(con_seq,4,widget2)
+        self.select_list[0].blockSignals(True)
+        self.select_list[0].setChecked(True)
+        self.select_list[0].blockSignals(False)
+        self.con_info=self.con_info_dict[0]
+    def select_list_changed(self,index):
+        if(self.select_list[index].isChecked()):
+            for i in self.select_list:
+                i.setChecked(False)
+            self.select_list[index].setChecked(True)
+            self.con_info=self.con_info_dict[index]
+            print(self.con_info)
+    def addBtn_con_clicked(self):
+        self.addWidget=InputWidget()
+        self.addWidget.confirmBtn.clicked.connect(self.getConInfo) 
+        returnCode=self.addWidget.exec()
+        if returnCode:
+            n=len(self.con_info_dict)
+            self.con_info=(self.addWidget.nameEdit.text()[0:30],self.addWidget.phoneEdit.text()[0:20],self.addWidget.addrEdit.text()[0:50])
+            self.con_info_dict[n]=self.con_info
+            self.db.addCus_con_info(self.account,self.con_info,n)
+            self.init_con_info()
+    def getConInfo(self):
+        self.con_info=(self.addWidget.nameEdit.text(),self.addWidget.phoneEdit.text(),self.addWidget.addrEdit.text())
+    def change_con_clicked(self,index):
+        self.changeWidget=InputWidget(self.con_info_dict[index])
+        #self.changeWidget.confirmBtn.clicked.connect(self.getConInfo)
+        returnCode=self.changeWidget.exec()
+        if returnCode:
+            self.con_info=(self.changeWidget.nameEdit.text()[0:20],self.changeWidget.phoneEdit.text()[0:20],self.changeWidget.addrEdit.text()[0:50])
+            self.con_info_dict[index]=self.con_info
+            self.db.changeCus_con_info(self.account,self.con_info,index)
+            self.init_con_info()
+    def delete_con_clicked(self,index):
+        self.db.deleteCus_con_info(self.account,index,len(self.con_info_dict))
+        self.init_con_info()
     def init_mer_info(self):
         self.mer_table.setRowCount(len(self.mer_dict))
         self.mer_table.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
@@ -184,11 +271,10 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.history_table.setRowCount(history_row)
         self.history_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history_table.verticalHeader().setHidden(True)
+        self.history_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         index_order=0
         index_mer=0
-        for order_id,order_value in self.order_dict.items():#订单id，订单类
-            self.history_table.setSpan(index_order,0,order_value.num,1)
-            self.history_table.setSpan(index_order,4,order_value.num,1)
+        for order_id,order_value in sorted(self.order_dict.items(),reverse=True):#订单id，订单类
             self.history_table.setItem(index_order,0,QTableWidgetItem("总金额 ￥"+str(order_value.total)+"\n\n"+order_value.status))
             self.history_table.item(index_order,0).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.orderBtns=OrderOperate(order_value.status)
@@ -197,18 +283,20 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             if order_value.status=="未付款":
                 self.orderBtns.payBtn.clicked.connect(functools.partial(self.payBtn_clicked,order_id))
                 self.orderBtns.cancelBtn.clicked.connect(functools.partial(self.cancel_order,order_id))
+            elif order_value.status=="已付款" or order_value.status=="已准备":
+                self.orderBtns.refundBtn.clicked.connect(functools.partial(self.refund_order,order_id))
             for mer_key,mer_value in order_value.mer_dict.items():#商品id,购买数量
                 mer_info=self.db.getMerInfo(mer_key)
                 self.history_table.setItem(index_mer,1,QTableWidgetItem("图片"))
                 self.history_table.setItem(index_mer,2,QTableWidgetItem(mer_info[0][0]))
+                self.history_table.item(index_mer,2).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
                 self.history_table.setItem(index_mer,3,QTableWidgetItem(str(mer_value)))
+                self.history_table.item(index_mer,3).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
                 index_mer+=1
+            if(order_value.num>1):
+                self.history_table.setSpan(index_order,0,order_value.num,1)
+                self.history_table.setSpan(index_order,4,order_value.num,1)
             index_order+=order_value.num
-    #显示详情
-    def viewDetailBtn_clicked(self,id):
-        self.currentOrder=self.order_dict[id]
-        self.detail=Detial(self.currentOrder)
-        self.detail.show()
     #确认订单
     def checkOrderBtn_clicked(self):
         self.returnCartBtn.setEnabled(True)
@@ -226,9 +314,9 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
     #支付
     def payBtn_clicked(self,order_id):
         if self.stackedWidget.currentIndex()==1:
-            con_name=self.con_table.item(0,0).text()
-            con_phone=self.con_table.item(0,1).text()
-            con_addr=self.con_table.item(0,2).text()
+            con_name=self.con_info[0]
+            con_phone=self.con_info[1]
+            con_addr=self.con_info[2]
             dis_method=self.methodBox.currentText()
             self.currentOrder=OrderItem((0,self.account,con_name,con_phone,con_addr,dis_method,"",str(self.mer_dict),self.money))
         else:
@@ -248,17 +336,27 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.stackedWidget.setCurrentIndex(2)
         self.init_history_table()
         pass
-    #取消订单
-    def cancel_order(self,order_id):
-        self.db.changeOrderStatus(order_id,"订单取消")
-        self.init_history_table()
-
     #订单历史
     def myOrderBtn_clicked(self):
         self.returnCartBtn.setEnabled(True)
         self.myOrderBtn.setEnabled(False)
         self.stackedWidget.setCurrentIndex(2)
         self.init_history_table()
+    #显示详情
+    def viewDetailBtn_clicked(self,id):
+        self.currentOrder=self.order_dict[id]
+        self.detail=Detial(self.currentOrder)
+        self.detail.show()
+    #取消订单
+    def cancel_order(self,order_id):
+        self.db.changeOrderStatus(order_id,"订单取消")
+        self.init_history_table()
+    
+    #申请退款
+    def refund_order(self,order_id):
+        self.db.changeOrderStatus(order_id,"申请退款")
+        self.init_history_table()
+    
 class Pay(QDialog,Ui_Dialog):
     def __init__(self,money):
         super().__init__()
@@ -279,9 +377,24 @@ class OrderOperate(QWidget):
             vlayout.addWidget(self.viewBtn)
             vlayout.addWidget(self.payBtn)
             vlayout.addWidget(self.cancelBtn)
+        if(status=="已付款"or status=="已准备"):
+            self.refundBtn=QPushButton("申请退款")
+            vlayout.addWidget(self.viewBtn)
+            vlayout.addWidget(self.refundBtn)
         else:
             vlayout.addWidget(self.viewBtn)
         self.setLayout(vlayout)
+class InputWidget(QDialog,Ui_input):
+    def __init__(self,con_info=["","",""]):
+        super(QDialog,self).__init__()
+        self.setupUi(self)
+        self.nameEdit.setText(con_info[0])
+        self.phoneEdit.setText(str(con_info[1]))
+        self.addrEdit.setText(con_info[2])
+        self.phoneEdit.setValidator(QRegExpValidator(QRegExp("[0-9]+$")))
+        self.confirmBtn.clicked.connect(self.accept)
+        self.cancelBtn.clicked.connect(self.reject)
+
 class Detial(QWidget,Ui_Form):
     def __init__(self,order_item:OrderItem,parent=None):
         super(QWidget,self).__init__(parent)
@@ -311,7 +424,8 @@ class Detial(QWidget,Ui_Form):
         self.pushButton.clicked.connect(self.close)
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    test=OrderOperate("未付款")
+    #test=OrderOperate("未付款")
+    test=InputWidget()
     test.show()
     sys.exit(app.exec_())
     pass
