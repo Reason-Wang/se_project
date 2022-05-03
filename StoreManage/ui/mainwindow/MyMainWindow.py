@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import functools
 from ui.mainwindow.Ui_MyMainWindow import *
 from ui.MerchWidget import merchWidget
@@ -12,20 +13,27 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.setupUi(self)
         self.merchlist = merchlist
         self.manager= manager
-        self.previewbar = previewBar.previewBarWidget(self,merchlist)
-        self.buttonwidget = storeManage_widget.storeManage_widget(self)
+        self.previewbar = previewBar.previewBarWidget(parent=self,merchlist=merchlist,manager=self.manager)
+        self.buttonwidget = storeManage_widget.storeManage_widget(parent=self,manager=self.manager)
         self.layout = QHBoxLayout()
         self.centralwidget.setLayout(self.layout)
+        self.mylayout=NULL
         self.initLayout()
         self.setSlot()
 
     def initLayout(self):
+        if self.mylayout:
+            self.mylayout.deleteLater()
+        self.mylayout = QHBoxLayout()
+        self.layout.addLayout(self.mylayout)
+        print(self.layout.count())
+        self.mylayout.addWidget(self.previewbar)
+        self.mylayout.addWidget(self.buttonwidget)
+        
+        self.mylayout.setStretch(2,1)
+        print(self.previewbar.size())
+        print(self.buttonwidget.size())
 
-        self.previewbar.scrollArea.resize(self.previewbar.scrollAreaWidgetContents.width()+25,self.previewbar.scrollArea.height())
-        self.layout.addWidget(self.previewbar)
-        self.layout.addWidget(self.buttonwidget)
-
-        self.previewbar.show()
 
     def setSlot(self):
         print("setslot in mainwindow")
@@ -36,7 +44,10 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
 
     def delete_item(self,index):
         print(f"delete : {index}")
-        print(self.merchlist.pop(index))
+
+        self.manager.delete_merchandise_byOBJ(self.merchlist.pop(index))
+        self.merchlist = self.manager.merchandise_list
+
         new_previewBar = previewBar.previewBarWidget(self,self.merchlist,self.manager)
         self.previewbar.deleteLater()
         self.previewbar = new_previewBar
@@ -51,15 +62,17 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.page.show()
 
     def page_ok(self):
-        self.show()
+        
         self.page.submit_Info()
         self.page.deleteLater()
 
+        self.merchlist = self.manager.merchandise_list
         new_previewBar = previewBar.previewBarWidget(self,self.merchlist)
         self.previewbar.deleteLater()
         self.previewbar = new_previewBar
         self.initLayout()
         self.setSlot()
+        self.show()
 
     def page_cancel(self):
         self.page.deleteLater()

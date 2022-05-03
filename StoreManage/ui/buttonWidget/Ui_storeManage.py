@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\l\Desktop\软工大作业\se_project\StoreManage\ui\buttonWidget\Ui_storeManage.ui'
+# Form implementation generated from reading ui file 'c:\Users\l\Desktop\软工大作业\se_project\StoreManage\ui\buttonWidget\storeManage.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,16 +14,24 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(129, 156)
+        Form.resize(137, 222)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout.setObjectName("verticalLayout")
         self.insert_pushButton = QtWidgets.QPushButton(Form)
-        self.insert_pushButton.setGeometry(QtCore.QRect(20, 20, 93, 28))
+        self.insert_pushButton.setMinimumSize(QtCore.QSize(115, 28))
+        self.insert_pushButton.setMaximumSize(QtCore.QSize(115, 28))
         self.insert_pushButton.setObjectName("insert_pushButton")
+        self.verticalLayout.addWidget(self.insert_pushButton)
         self.updata_pushButton = QtWidgets.QPushButton(Form)
-        self.updata_pushButton.setGeometry(QtCore.QRect(20, 70, 93, 28))
+        self.updata_pushButton.setMinimumSize(QtCore.QSize(115, 28))
+        self.updata_pushButton.setMaximumSize(QtCore.QSize(115, 28))
         self.updata_pushButton.setObjectName("updata_pushButton")
+        self.verticalLayout.addWidget(self.updata_pushButton)
         self.delete_pushButton = QtWidgets.QPushButton(Form)
-        self.delete_pushButton.setGeometry(QtCore.QRect(20, 120, 93, 28))
+        self.delete_pushButton.setMinimumSize(QtCore.QSize(115, 28))
+        self.delete_pushButton.setMaximumSize(QtCore.QSize(115, 28))
         self.delete_pushButton.setObjectName("delete_pushButton")
+        self.verticalLayout.addWidget(self.delete_pushButton)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)

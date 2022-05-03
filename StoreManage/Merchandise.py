@@ -29,9 +29,10 @@ class Merchandise:
         self.name=name        #商品名称
         self.price=price       #商品价格
         self.number=number      #商品库存量
+        
 
     def toCell(self):
-        return (self.id,self.name,self.price,self.number)
+        return (self.name,self.price,self.number)
 
 
 class Merchandise_Manage:
@@ -39,17 +40,21 @@ class Merchandise_Manage:
         self.user=""
         self.db_user="lhd"
         self.passwd="123456"
-        self.tablename="MERCHAN"
+        self.tablename = "MERCHAN_SERIAL_ID"
+        self.connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        self.connection.autocommit = True
+        # self.init_MERCHAN_table()
         self.merchandise_list=self.get_merchandise_list()
+        
 
 
     #only for init table
     def init_MERCHAN_table(self):
-        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        connection = self.connection
 
-        create_MERCHAN_table = """
-            CREATE TABLE IF NOT EXISTS MERCHAN(
-            ID INT PRIMARY KEY,
+        create_MERCHAN_table = f"""
+            CREATE TABLE IF NOT EXISTS {self.tablename}(
+            ID SERIAL PRIMARY KEY,
             NAME VARCHAR(30),
             PRICE INT,
             NUMBER INT 
@@ -66,21 +71,21 @@ class Merchandise_Manage:
             origin_list.append(Merchandise(i,name,price,number))
         for item in origin_list:
             insert_origin_info = f"""
-            INSERT INTO MERCHAN (ID,NAME,PRICE,NUMBER)
+            INSERT INTO {self.tablename} (NAME,PRICE,NUMBER)
                 VALUES {item.toCell()}
             """
             execute_query(connection,insert_origin_info)
         print("insert done")
 
-        close(connection)
+        # close(connection)
     
     def get_merchandise_list(self):
-        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
-        select_all_from_MERCHAN="""
-            SELECT * FROM MERCHAN
+        connection = self.connection
+        select_all_from_MERCHAN=f"""
+            SELECT * FROM {self.tablename} ORDER BY ID;
         """
         result = execute_read_query(connection,select_all_from_MERCHAN)
-        close(connection)
+        # close(connection)
 
         RE = []
         for tuple in result:
@@ -89,34 +94,47 @@ class Merchandise_Manage:
         return RE
 
     def insert_merchandise(self,merch):
-        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        connection = self.connection
         insert_query=f"""
-            INSERT INTO MERCHAN (ID,NAME,PRICE,NUMBER)
+            INSERT INTO {self.tablename} (NAME,PRICE,NUMBER)
                 VALUES {merch.toCell()}
         """
         execute_query(connection,insert_query)
-        close(connection)
+        self.merchandise_list = self.get_merchandise_list()
+        # close(connection)
         return
 
 
     def delete_merchandise(self,merch_id):
-        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        connection = self.connection
         delete_query = f"""
-            DELETE FROM MERCHAN WHERE ID = {merch_id};
+            DELETE FROM {self.tablename} WHERE ID = {merch_id};
         """
         execute_query(connection,delete_query)
-        close(connection)
+        self.merchandise_list = self.get_merchandise_list()
+        # close(connection)
+        return
+
+    def delete_merchandise_byOBJ(self,merch):
+        connection = self.connection
+        delete_query = f"""
+            DELETE FROM {self.tablename} WHERE ID = {merch.id};
+        """
+        execute_query(connection,delete_query)
+        self.merchandise_list = self.get_merchandise_list()
+        # close(connection)
         return
 
     def serch_merchandise(self):
         return
     def update_merchandise(self,merch):
-        connection = create_connection(db_name='se',db_user=self.db_user,db_password=self.passwd)
+        connection = self.connection
         update_query = f"""
-            UPDATE MERCHAN SET NAME = '{merch.name}' , PRICE ={merch.price} , NUMBER = {merch.number} WHERE ID = {merch.id};
+            UPDATE {self.tablename} SET NAME = '{merch.name}' , PRICE ={merch.price} , NUMBER = {merch.number} WHERE ID = {merch.id};
         """
         execute_query(connection,update_query)
-        close(connection)
+        self.merchandise_list = self.get_merchandise_list()
+        # close(connection)
         return
 if __name__=='__main__':
     manager = Merchandise_Manage()

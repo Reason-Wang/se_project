@@ -19,6 +19,7 @@ class previewBarWidget(QWidget,Ui_Form):
 
     def setup_slot(self):
         print("setup_slot in mainwindow")
+        self.scrollArea.size
 
     def addMerch(self):
         for index,item in enumerate(self.merchlist):
@@ -26,7 +27,7 @@ class previewBarWidget(QWidget,Ui_Form):
             self.merchWidgetlist.append(merchWidget.merchWidget(parent=self,merch=item))
             self.layout.addWidget(self.merchWidgetlist[index])
             # print(f"index:{index}")
-            self.scrollArea.resize((self.merchWidgetlist[index].width()+50),self.scrollArea.height())
+            # self.scrollArea.resize((self.merchWidgetlist[index].width()+50),self.scrollArea.height())
             self.scrollAreaWidgetContents.resize((self.merchWidgetlist[index].width()+50),(index+1)*(self.merchWidgetlist[index].height()+25))
 
 
