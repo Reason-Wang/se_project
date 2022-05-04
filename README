@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is store side
 
 商品管理模块：
@@ -9,3 +10,6 @@ This is store side
 若要测试代码，请在./StoreManage目录下执行StoreManage.py 文件
 cd StoreManage
 python StoreManage.py
+=======
+This is user side branch
+>>>>>>> store_side_kyn

@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton_OK = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_OK.setGeometry(QtCore.QRect(710, 510, 75, 41))
+        self.pushButton_OK.setGeometry(QtCore.QRect(0, 0, 75, 41))
         self.pushButton_OK.setObjectName("pushButton_OK")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
