@@ -20,6 +20,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.stackedWidget.setCurrentIndex(0)
         self.returnCartBtn.setEnabled(False)
         self.initTable()
+        self.init_history_table()
         self.checkAll.stateChanged.connect(self.checkAll_changed)
         self.checkOrderBtn.clicked.connect(self.checkOrderBtn_clicked)
         self.returnCartBtn.clicked.connect(self.returnCartBtn_clicked)
@@ -139,6 +140,11 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             self.initTable()
         else:
             return
+    def delete_bought(self):
+        for id in self.mer_dict:
+            del self.cart_dict[id]
+        self.db.changeCart(self.account,self.cart_dict)
+        self.initTable()
     def change_cart_dict(self,index):
         key=tuple(self.cart_dict)[index]
         #key=int(self.table.item(index,1).text())
@@ -178,8 +184,10 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.con_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.con_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.select_list=list()
-        for con_seq,con_info in self.con_info_dict.items():
+        #print(sorted(self.con_info_dict.items()))
+        for con_seq,con_info in sorted(self.con_info_dict.items()):
             self.select_list.append(QCheckBox())
+            #print(con_seq)
             self.select_list[-1].stateChanged.connect(functools.partial(self.select_list_changed,con_seq))
             hLayout = QHBoxLayout()
             hLayout.addWidget(self.select_list[-1])
@@ -216,11 +224,12 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.select_list[0].setChecked(True)
         self.select_list[0].blockSignals(False)
         self.con_info=self.con_info_dict[0]
+        #print(len(self.select_list))
     def select_list_changed(self,index):
         if(self.select_list[index].isChecked()):
-            for i in self.select_list:
-                i.setChecked(False)
-            self.select_list[index].setChecked(True)
+            for i in range(len(self.select_list)):
+                if not (i==index):
+                    self.select_list[i].setChecked(False)
             self.con_info=self.con_info_dict[index]
             print(self.con_info)
     def addBtn_con_clicked(self):
@@ -263,11 +272,12 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
                 self.mer_table.item(index,i).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             index+=1
     def init_history_table(self):
+        self.history_table.clearContents()
+        self.history_table.setRowCount(0)
         self.order_dict=self.db.getOrderHistory(self.account)
         history_row=0
         for value in self.order_dict.values():
             history_row+=value.num
-        self.history_table.clearContents()
         self.history_table.setRowCount(history_row)
         self.history_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history_table.verticalHeader().setHidden(True)
@@ -275,6 +285,9 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         index_order=0
         index_mer=0
         for order_id,order_value in sorted(self.order_dict.items(),reverse=True):#订单id，订单类
+            if(order_value.num>1):
+                self.history_table.setSpan(index_order,0,order_value.num,1)
+                self.history_table.setSpan(index_order,4,order_value.num,1)
             self.history_table.setItem(index_order,0,QTableWidgetItem("总金额 ￥"+str(order_value.total)+"\n\n"+order_value.status))
             self.history_table.item(index_order,0).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.orderBtns=OrderOperate(order_value.status)
@@ -293,9 +306,6 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
                 self.history_table.setItem(index_mer,3,QTableWidgetItem(str(mer_value)))
                 self.history_table.item(index_mer,3).setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
                 index_mer+=1
-            if(order_value.num>1):
-                self.history_table.setSpan(index_order,0,order_value.num,1)
-                self.history_table.setSpan(index_order,4,order_value.num,1)
             index_order+=order_value.num
     #确认订单
     def checkOrderBtn_clicked(self):
@@ -331,9 +341,8 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
             self.db.addOrder(self.currentOrder)
         else:
             self.db.changeOrderStatus(self.currentOrder.order_id,self.currentOrder.status)
-        self.returnCartBtn.setEnabled(True)
-        self.myOrderBtn.setEnabled(False)
-        self.stackedWidget.setCurrentIndex(2)
+        self.delete_bought()
+        self.myOrderBtn_clicked()
         self.init_history_table()
         pass
     #订单历史
@@ -341,7 +350,7 @@ class Cart(QMainWindow,Ui_MainWindow):#购物车页面
         self.returnCartBtn.setEnabled(True)
         self.myOrderBtn.setEnabled(False)
         self.stackedWidget.setCurrentIndex(2)
-        self.init_history_table()
+        #self.init_history_table()
     #显示详情
     def viewDetailBtn_clicked(self,id):
         self.currentOrder=self.order_dict[id]

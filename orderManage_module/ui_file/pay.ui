@@ -61,7 +61,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>取消支付</string>
+    <string>稍后支付</string>
    </property>
   </widget>
   <widget class="QPushButton" name="confirmBtn">
