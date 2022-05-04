@@ -2,18 +2,16 @@ import sys
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-
 from ui.register_window import *
 from ui.login_window import *
-from ui.shop_main_window import *
+from ui.cus_main_window import *
 
-from ui.shop_info_window import *
+from ui.cus_info_window import *
 from send_data import *
 import psycopg2
 import time
 
-
-class Shop_op:
+class Customer_op:
     def __init__(self):
         self.host = '123.57.48.49'
         self.user = 'shy'
@@ -30,16 +28,16 @@ class Shop_op:
         self.cur.close()
         self.conn.close()
 
-    def register(self, user, passwd, shop_name, phone, addr):
+    def register(self, user, passwd, cus_name, phone, addr):
         self.connect()
-        self.cur.execute('select shop_acc from shop where shop_acc=%s', [user])
+        self.cur.execute(
+            'select cus_acc from customer where cus_acc=%s', [user])
         data = self.cur.fetchone()
         if data is not None:
             self.close()
             return False
-        value = [user, passwd, shop_name, phone, addr, time.strftime(
-            '%Y-%m-%d %H:%M:%S', time.localtime(time.time()))]
-        self.cur.execute('insert into shop values(%s,%s,%s,%s,%s,%s)', value)
+        value = [user, passwd, cus_name, phone, addr]
+        self.cur.execute('insert into customer values(%s,%s,%s,%s,%s)', value)
         self.conn.commit()
         self.close()
         return True
@@ -48,7 +46,7 @@ class Shop_op:
         self.connect()
         value = [user, passwd]
         self.cur.execute(
-            'select shop_acc,shop_pass from shop where shop_acc=%s and shop_pass=%s', value)
+            'select cus_acc,cus_pass from customer where cus_acc=%s and cus_pass=%s', value)
         data = self.cur.fetchone()
         if data is not None:
             self.close()
@@ -56,20 +54,22 @@ class Shop_op:
         self.close()
         return False
 
-    def shop_info(self, user):
+
+
+    def cus_info(self, user):
         self.connect()
         self.cur.execute(
-            'select shop_acc,shop_pass,shop_name,shop_phone,shop_addr,shop_time from shop where shop_acc=%s', [user])
+            'select cus_acc,cus_pass,cus_name,cus_phone,cus_addr from customer where cus_acc=%s', [user])
         data = self.cur.fetchone()
         self.close()
         return data
 
-    def update_shop(self, user, passwd, shop_name, phone, addr):
+    def update_cus(self, user, passwd, cus_name, phone, addr):
         self.connect()
         try:
-            value = [passwd, shop_name, phone, addr, user]
+            value = [passwd, cus_name, phone, addr, user]
             self.cur.execute(
-                'update shop set shop_pass=%s,shop_name=%s,shop_phone=%s,shop_addr=%s where shop_acc=%s', value)
+                'update customer set cus_pass=%s,cus_name=%s,cus_phone=%s,cus_addr=%s where cus_acc=%s', value)
             self.conn.commit()
         except Exception as e:
             self.conn.rollback()
@@ -77,6 +77,7 @@ class Shop_op:
             return False
         self.close()
         return True
+
 
 class Register(QMainWindow, Ui_register_window):
     def __init__(self, parent=None):
@@ -89,24 +90,23 @@ class Register(QMainWindow, Ui_register_window):
         username = self.username.text()
         pass1 = self.pass1.text()
         pass2 = self.pass2.text()
-        shop_name = self.shop_name.text()
+        cus_name = self.cus_name.text()
         phone = self.phone.text()
-        addr = self.addr.currentText()
-        if username == '' or pass1 == '' or shop_name == '' or phone == '' or addr == '':
-            QMessageBox.information(self, "注册", "店铺信息不能为空", QMessageBox.Yes)
+        addr = self.addr.text()
+        if username == '' or pass1 == '' or cus_name == '' or phone == '' or addr == '':
+            QMessageBox.information(self, "注册", "顾客信息不能为空", QMessageBox.Yes)
             return
         if pass1 != pass2:
             QMessageBox.information(self, "注册", "两次密码不同", QMessageBox.Yes)
             return
-        data = {'id': 'shop', 'type': 'register', 'user': username,
-                'passwd': pass1, 'shop_name': shop_name, 'phone': phone, 'addr': addr}
-        print("111")
-        op1 = Shop_op()
-        if op1.register(data['user'], data['passwd'], data['shop_name'], data['phone'], data['addr']):
+        data = {'id': 'customer', 'type': 'register', 'user': username,
+                'passwd': pass1, 'cus_name': cus_name, 'phone': phone, 'addr': addr}
+        # print(json.dumps(data))
+        op1 = Customer_op()
+        if op1.register(data['user'], data['passwd'], data['cus_name'], data['phone'], data['addr']):
             data = {'result': 'success'}
         else:
             data = {'result': 'fail'}
-        print("111")
         if data['result'] == 'success':
             QMessageBox.information(self, "注册", "注册成功", QMessageBox.Yes)
         else:
@@ -131,9 +131,9 @@ class Login(QMainWindow, Ui_login_window):
         if username == '' or password == '':
             QMessageBox.information(self, "登录", "用户名和密码不能为空", QMessageBox.Yes)
             return
-        data = {'id': 'shop', 'type': 'login',
+        data = {'id': 'customer', 'type': 'login',
                 'user': username, 'passwd': password}
-        op1 = Shop_op()
+        op1 = Customer_op()
         if op1.login(data['user'], data['passwd']):
             data = {'result': 'success'}
         else:
@@ -151,29 +151,14 @@ class Login(QMainWindow, Ui_login_window):
         myWin1.show()
 
 
-class Mainwin(QMainWindow, Ui_shop_main):
+class Mainwin(QMainWindow, Ui_cus_main):
     def __init__(self, parent=None):
         super(Mainwin, self).__init__(parent)
         self.setupUi(self)
-        # self.add_goods.clicked.connect(self.click1)
-        # self.view_goods.clicked.connect(self.click2)
-        # self.change_goods.clicked.connect(self.click3)
-        # self.view_trade.clicked.connect(self.click4)
-        self.shop_info.clicked.connect(self.click5)
 
-    # def click1(self):
-    #     myWin4.show()
-    #
-    # def click2(self):
-    #     myWin5.load()
-    #     myWin5.show()
-    #
-    # def click3(self):
-    #     myWin6.load()
-    #     myWin6.show()
-    #
-    # def click4(self):
-    #     myWin7.show()
+        self.cus_info.clicked.connect(self.click5)
+
+
 
     def click5(self):
         myWin8.load()
@@ -182,9 +167,10 @@ class Mainwin(QMainWindow, Ui_shop_main):
 
 
 
-class Shopinfo(QMainWindow, Ui_shop_info):
+
+class Cusinfo(QMainWindow, Ui_cus_info):
     def __init__(self, parent=None):
-        super(Shopinfo, self).__init__(parent)
+        super(Cusinfo, self).__init__(parent)
         self.setupUi(self)
         self.tomain.clicked.connect(self.click1)
         self.change_bt.clicked.connect(self.click2)
@@ -195,32 +181,33 @@ class Shopinfo(QMainWindow, Ui_shop_info):
     def click2(self):
         pass1 = self.pass1.text()
         pass2 = self.pass2.text()
-        shop_name = self.shop_name.text()
+        cus_name = self.cus_name.text()
         phone = self.phone.text()
-        addr = self.addr.currentText()
-        data = {'id': 'shop', 'type': 'update_shop', 'user': user,
-                'passwd': pass1, 'shop_name': shop_name, 'phone': phone, 'addr': addr}
-        op1 = Shop_op()
-
-        if op1.update_shop(data['user'], data['passwd'], data['shop_name'], data['phone'], data['addr']):
-            QMessageBox.information(self, "修改店铺信息", "修改成功", QMessageBox.Yes)
+        addr = self.addr.text()
+        data = {'id': 'customer', 'type': 'update_cus', 'user': user,
+                'passwd': pass1, 'cus_name': cus_name, 'phone': phone, 'addr': addr}
+        op1 = Customer_op()
+        if op1.update_cus(data['user'], data['passwd'], data['cus_name'], data['phone'], data['addr']):
+            data = {'result': 'success'}
         else:
-            QMessageBox.information(self, "修改店铺信息", "修改失败", QMessageBox.Yes)
+            data = {'result': 'fail'}
+        if data['result'] == 'success':
+            QMessageBox.information(self, "修改顾客信息", "修改成功", QMessageBox.Yes)
+        else:
+            QMessageBox.information(self, "修改顾客信息", "修改失败", QMessageBox.Yes)
         self.load()
 
     def load(self):
-        data = {'id': 'shop', 'type': 'shop_info', 'user': user}
-        op1 = Shop_op()
-        data = {'result': op1.shop_info(data['user'])}
+        data = {'id': 'customer', 'type': 'cus_info', 'user': user}
+        op1 = Customer_op()
+        data = {'result': op1.cus_info(data['user'])}
         self.username.setText(data['result'][0])
         self.username.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pass1.setText(data['result'][1])
         self.pass2.setText(data['result'][1])
-        self.shop_name.setText(data['result'][2])
+        self.cus_name.setText(data['result'][2])
         self.phone.setText(data['result'][3])
-        self.addr.setCurrentText(data['result'][4])
-        self.shop_time.setText(data['result'][5])
-        self.shop_time.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.addr.setText(data['result'][4])
 
 
 if __name__ == '__main__':
@@ -231,9 +218,6 @@ if __name__ == '__main__':
     myWin2 = Login()
     myWin3 = Mainwin()
 
-
-    myWin8 = Shopinfo()
-    # myWin8.show()
-
+    myWin8 = Cusinfo()
     if app.exec_() == 0:
         sys.exit(0)

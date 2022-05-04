@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'login_window.ui'
+# Form implementation generated from reading ui file 'ui/login_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.2
 #
@@ -77,7 +77,7 @@ class Ui_login_window(object):
 
     def retranslateUi(self, login_window):
         _translate = QtCore.QCoreApplication.translate
-        login_window.setWindowTitle(_translate("login_window", "购物商城商家端"))
+        login_window.setWindowTitle(_translate("login_window", "购物商城顾客端"))
         self.toreg.setText(_translate("login_window", "注册"))
         self.label.setText(_translate("login_window", "用户名"))
         self.label_8.setText(_translate("login_window", "密码"))
