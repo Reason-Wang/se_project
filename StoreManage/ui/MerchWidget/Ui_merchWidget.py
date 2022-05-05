@@ -22,6 +22,7 @@ class Ui_Form(object):
         self.picture = QtWidgets.QLabel(Form)
         self.picture.setMinimumSize(QtCore.QSize(120, 153))
         self.picture.setFrameShape(QtWidgets.QFrame.Box)
+        self.picture.setText("")
         self.picture.setObjectName("picture")
         self.gridLayout.addWidget(self.picture, 0, 0, 4, 1)
         self.numberlabel = QtWidgets.QLabel(Form)
@@ -65,7 +66,6 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.picture.setText(_translate("Form", "商品图片"))
         self.numberlabel.setText(_translate("Form", "商品库存"))
         self.label_5.setText(_translate("Form", "商品类别"))
         self.pricelabel.setText(_translate("Form", "商品价格"))

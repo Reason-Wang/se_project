@@ -28,7 +28,7 @@
         <enum>QFrame::Box</enum>
        </property>
        <property name="text">
-        <string>商品图片</string>
+        <string/>
        </property>
       </widget>
      </item>

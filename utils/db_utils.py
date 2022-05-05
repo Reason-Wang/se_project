@@ -24,7 +24,7 @@ def create_connection(db_name, db_user, db_password, db_host=remote_host, db_por
 
 
 def create_database(connection, query):
-    connection.autocommit = True
+    # connection.autocommit = True
     cursor = connection.cursor()
     try:
         cursor.execute(query)
@@ -33,7 +33,7 @@ def create_database(connection, query):
         print(f"The error '{e}' occurred")
 
 def execute_query(connection, query):
-    connection.autocommit = True
+    # connection.autocommit = True
     cursor = connection.cursor()
     try:
         cursor.execute(query)
@@ -51,6 +51,36 @@ def execute_read_query(connection, query):
         return result
     except OperationalError as e:
         print(f"The error '{e}' occurred")
+
+
+
+def readImage(picpath):
+    picpath =  picpath
+    fin = None
+    try:
+        fin = open(picpath, "rb")
+        img = fin.read()
+        return img
+    except IOError as e:
+        print(f'Error {e.args[0]}, {e.args[1]}')
+    finally:
+        if fin:
+            fin.close()
+
+def insert_img(connection,picpath):
+    con = connection
+    try:
+        cur = con.cursor()
+        print(picpath)
+        data = readImage(picpath)
+        binary = psycopg2.Binary(data)
+
+        cur.execute("INSERT INTO picture(data) VALUES (%s)", (binary,))
+    except psycopg2.DatabaseError as e:
+        if con:
+            con.rollback()
+        print(f'Error {e}')
+
 
 def close(connection):
     connection.close()

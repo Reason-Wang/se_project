@@ -19,8 +19,9 @@ class updatePageWidget(QWidget,Ui_Form):
             self.nameEdit.setText(f"{self.merch.name}")
             self.priceEdit.setText(f"{self.merch.price}")
             self.numberEdit.setText(f"{self.merch.number}")
+            self.catEdit.setText(f"{self.merch.cat}")
         else:
-            self.merch=Merchandise("","","","")
+            self.merch=Merchandise("","","","","","",0)
         return
 
     def submit_Info(self):
@@ -45,7 +46,7 @@ class updatePageWidget(QWidget,Ui_Form):
         self.merch.name=self.nameEdit.text()
         self.merch.price=self.priceEdit.text()
         self.merch.number=self.numberEdit.text()
-
+        self.merch.cat = self.catEdit.text()
         if self.OKpushButton.text()=="更新":
             self.manager.update_merchandise(self.merch)
         elif self.OKpushButton.text()=="上架":

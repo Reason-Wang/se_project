@@ -24,7 +24,7 @@ class previewBarWidget(QWidget,Ui_Form):
     def addMerch(self):
         for index,item in enumerate(self.merchlist):
             # print(item.toCell())
-            self.merchWidgetlist.append(merchWidget.merchWidget(parent=self,merch=item))
+            self.merchWidgetlist.append(merchWidget.merchWidget(parent=self,merch=item,manager=self.manager))
             self.layout.addWidget(self.merchWidgetlist[index])
             # print(f"index:{index}")
             # self.scrollArea.resize((self.merchWidgetlist[index].width()+50),self.scrollArea.height())
