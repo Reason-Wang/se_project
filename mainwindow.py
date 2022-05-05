@@ -9,7 +9,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # usage of example widget
-        self.example_widget = ExampleWidget()
+        self.example_widget = ExampleWidget(self)
         self.pushButton_OK.clicked.connect(self.example_widget.show)
 
 

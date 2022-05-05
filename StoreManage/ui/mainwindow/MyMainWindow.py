@@ -78,7 +78,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         self.page.deleteLater()
 
         self.merchlist = self.manager.merchandise_list
-        new_previewBar = previewBar.previewBarWidget(self,self.merchlist)
+        new_previewBar = previewBar.previewBarWidget(self,self.merchlist,manager=self.manager)
         self.previewbar.deleteLater()
         self.previewbar = new_previewBar
         self.initLayout()
@@ -89,7 +89,7 @@ class MyMainWindow(QMainWindow,Ui_MainWindow):
         print("page_cancel")
         self.page.deleteLater()
 
-        new_previewBar = previewBar.previewBarWidget(self,self.merchlist)
+        new_previewBar = previewBar.previewBarWidget(self,self.merchlist,manager=self.manager)
         self.previewbar.deleteLater()
         self.previewbar = new_previewBar
         self.initLayout()

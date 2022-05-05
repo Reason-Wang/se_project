@@ -25,11 +25,11 @@ class merchWidget(QWidget,Ui_Form):
         return
 
     def draw_picture(self):
-        data = self.manager.get_picture_data(self.merch.pic_id)
-        print(data)
-        self.pixmap=ImageQt.toqpixmap(Image.open(BytesIO(data[0][1])))
+        self.data = self.manager.get_picture_data(self.merch.pic_id)
+        print(self.data)
+        self.pixmap=ImageQt.toqpixmap(Image.open(BytesIO(self.data[0][1])))
         print(self.pixmap.height(),self.pixmap.width())
-        self.pixmap.scaled(self.picture.width(),self.height())
+        # self.pixmap=self.pixmap.scaled(200,200)
+        self.pixmap=self.pixmap.scaled(self.picture.width(),self.picture.height())
+        print(self.pixmap.height(),self.pixmap.width())
         self.picture.setPixmap(self.pixmap)
-        fout = open(f'{self.merch.name}.jpg', 'wb')
-        fout.write(data[0][1])

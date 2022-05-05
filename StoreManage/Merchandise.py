@@ -16,9 +16,13 @@
 
 
 
-from random import random
+
 import sys
-sys.path.append('..')
+import os
+print(os.path.abspath('.'))
+sys.path.append(os.path.abspath('.'))
+from random import random
+print(sys.path)
 from utils.db_utils import *
 
 
@@ -285,14 +289,15 @@ class Merchandise_Manage:
 
 
 if __name__=='__main__':
-    # merch=Merchandise(1,2,3,4)
-    # merch.toJson()
-    manager = Merchandise_Manage()
-    # print(manager.merchandise_list)
-    picpath=r"C:\Users\l\Desktop\se\img.png"
-    insert_img(manager.connection,picpath)
-    # data=manager.get_picture_data(1)
-    # print(data)
-    # fout = open('sid87873.jpg', 'wb')
-    # fout.write(data[0][1])
-
+    # # merch=Merchandise(1,2,3,4)
+    # # merch.toJson()
+    # manager = Merchandise_Manage()
+    # # print(manager.merchandise_list)
+    # picpath=r"C:\Users\l\Desktop\se\img.png"
+    # insert_img(manager.connection,picpath)
+    # # data=manager.get_picture_data(1)
+    # # print(data)
+    # # fout = open('sid87873.jpg', 'wb')
+    # # fout.write(data[0][1])
+    exit()
+    
