@@ -8,7 +8,7 @@ from ui.login_window import *
 from ui.shop_main_window import *
 
 from ui.shop_info_window import *
-from send_data import *
+
 import psycopg2
 import time
 
