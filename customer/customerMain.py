@@ -7,7 +7,7 @@ from ui.login_window import *
 from ui.cus_main_window import *
 
 from ui.cus_info_window import *
-from send_data import *
+
 import psycopg2
 import time
 
