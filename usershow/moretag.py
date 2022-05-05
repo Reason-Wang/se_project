@@ -12,22 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
-from outshow_rc import myshowout,addcart
-
-class MyQLabel(QLabel):
-    # 自定义信号, 注意信号必须为类属性
-    button_clicked_signal = pyqtSignal()
-
-    def __init__(self, parent=None):
-        super(MyQLabel, self).__init__(parent)
-
-    def mouseReleaseEvent(self, QMouseEvent):
-        self.button_clicked_signal.emit()
-
-    # 可在外部与槽函数连接
-    def connect_customized_slot(self, func):
-        self.button_clicked_signal.connect(func)
-
+from usershow.outshow_rc import myshowout,addcart,MyQLabel
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

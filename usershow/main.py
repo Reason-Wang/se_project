@@ -1,7 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from lll import Cart
-from mydb_utiles import *
+from usershow.lll import Cart
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Cart("20191234")
