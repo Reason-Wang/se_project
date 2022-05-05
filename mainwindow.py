@@ -12,6 +12,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.example_widget = ExampleWidget()
         self.pushButton_OK.clicked.connect(self.example_widget.show)
 
+        # self.<class_name> = ClassName()
+        # self.pushButton_hc.clicked.connect(self.<Class_Name>.show)
+
+        # self.<class_name> = ClassName()
+        # self.pushButton_lbc.clicked.connect(self.<Class_Name>.show)
+
+        # self.<class_name> = ClassName()
+        # self.pushButton_shy.clicked.connect(self.<Class_Name>.show)
+
 
     def show(self):
         super(MainWindow, self).show()
