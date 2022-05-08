@@ -1,15 +1,1 @@
-<<<<<<< HEAD
-This is store side
-
-商品管理模块：
-对于数据结构的定义和使用的表的定义位于./StoreManage/Merchandise.py
-各组件及主窗口的定义于 ./StoreManage/ui
-主调程序为 ./StoreManage/StoreManage.py
-
-目前模块的导入尚且存在一些问题,在se_project目录下执行会导致找不到一些模块
-若要测试代码，请在./StoreManage目录下执行StoreManage.py 文件
-cd StoreManage
-python StoreManage.py
-=======
-This is user side branch
->>>>>>> store_side_kyn
+## the store side files
