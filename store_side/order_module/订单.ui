@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1028</width>
+    <height>545</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLineEdit" name="lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>100</y>
+     <width>321</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>            您好！欢迎来到订单管理界面！</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>140</y>
+     <width>881</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>订单编号</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>校园卡号</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>收货人姓名</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>收货人电话</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>收货人地址</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>配送方式</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>订单状态</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>商品字典</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>消费总金额</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>订单日期</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>处理订单按钮</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>460</y>
+     <width>131</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>刷新订单界面</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
