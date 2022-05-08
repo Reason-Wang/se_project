@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 + 运行截图
 
-![user](images\user.png)![store](C:\Users\WRX\Courses\软件工程\se_project\images\store.png)
+![user](images/user.png)![store](images/store.png)
 
 如果我们的项目有帮助，请点一颗小星星吧:heart:
 
