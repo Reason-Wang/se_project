@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 + 运行截图
 
-<img src="images\user.png" alt="user" style="zoom:50%;" /><img src="images\store.png" alt="store" style="zoom:50%;" />
+<img src="images\user.png" alt="user" style="zoom:20%;" /><img src="images\store.png" alt="store" style="zoom:20%;" />
 
 如果我们的项目有帮助，请点一颗小星星吧:heart:
 
